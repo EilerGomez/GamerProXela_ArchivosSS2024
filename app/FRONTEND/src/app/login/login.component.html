@@ -1,0 +1,29 @@
+<div class="login-container">
+    <div class="login-box">
+      <h2 class="login-title">Iniciar Sesión</h2>
+      <form class="login-form">
+        <div class="input-group">
+          <label for="username" class="input-label">Usuario</label>
+          <input type="text" id="username" #username class="input-field" placeholder="Ingrese su usuario" required>
+        </div>
+        <div class="input-group">
+          <label for="password" class="input-label">Contraseña</label>
+          <input type="password" #password id="password" class="input-field" placeholder="Ingrese su contraseña" required>
+        </div>
+        <div class="input-group">
+          <label for="area" class="input-label">Área</label>
+          <select id="area" #area class="input-field">
+            <option value="1">Administrador</option>
+            <option value="2">De inventario</option>
+            <option value="3">Bodeguero</option>
+            <option value="4">Cajero</option>
+          </select>
+        </div>
+        <button type="submit" class="login-button" (click)="traerUsuario(username.value,password.value,area.value)">Ingresar</button>
+      </form>
+      <div *ngIf="mostrarAlert" class="alert alert-danger mt-4">
+        Usuario inválido, intente de nuevo.
+      </div>
+    </div>
+  </div>
+  

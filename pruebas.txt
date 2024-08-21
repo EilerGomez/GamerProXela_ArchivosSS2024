@@ -1,0 +1,62 @@
+insert into sucursales.sucursal(nombre,direccion) values ('Sucursal Parque', 'las lomas1');
+insert into sucursales.sucursal(nombre,direccion) values ('Sucursal Centro1', 'las lomas1');
+insert into sucursales.sucursal(nombre,direccion) values ('Sucursal Centro2', 'las lomas1');
+insert into cajeros.compra(usuario,sucursal,fecha,total_compra) values (1,1,CURRENT_DATE,0);
+select * from sucursal;
+select * from usuarios;
+select * from compra;
+
+select * from compra;
+
+
+/*update usuarios set pass='1a1dc91c907325c69271ddf0c944bc72' where identificacion =1;
+select * from usuarios;*/
+
+--ingresando 6 usuarios
+
+--              ADMINISTRADOR
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Eiler gomez','1a1dc91c907325c69271ddf0c944bc72', 1,1);--pass='pass'/admin
+
+--              SUCURSAL 1
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Alberto Del Rio','c1572d05424d0ecb2a65ec6a82aeacbf', 3,1); --pass='pass2'/bodeguero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Juan Morena','3afc79b597f88a72528e864cf81856d2', 2,1); --pass='pass3'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Angel Correa','fc2921d9057ac44e549efaf0048b2512', 2,1); --pass='pass4'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Nicolas Tagliafico','d35f6fa9a79434bcd17f8049714ebfcb', 2,1); --pass='pass5'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Antonieta Diaz','e9568c9ea43ab05188410a7cf85f9f5e', 2,1); --pass='pass6'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Mario Kemppes','8c96c3884a827355aed2c0f744594a52', 4,1); --pass='pass7'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Raul Estrada','ccd3cd18225730c5edfc69f964b9d7b3', 4,1); --pass='pass8'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Wendy Cabrera','c28cce9cbd2daf76f10eb54478bb0454', 4,1); --pass='pass9'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Luisa Nayara','a3224611fd03510682690769d0195d66', 4,1); --pass='pass10'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Elvis Santos','0102812fbd5f73aa18aa0bae2cd8f79f', 4,1); --pass='pass11'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Antony Cano','0bd0fe6372c64e09c4ae81e056a9dbda', 4,1); --pass='pass12'/cajero
+
+
+
+
+--              SUCURSAL 2
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Thiago Alcantara','c868bff94e54b8eddbdbce22159c0299', 3,2); --pass='pass13'/bodeguero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Ancelma Gonzales','d1f38b569c772ebb8fa464e1a90c5a00', 2,2); --pass='pass14'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Pablo Gaviria','b279786ec5a7ed00dbe4d3fe1516c121', 2,2); --pass='pass15'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Pedro Gonzales','66c99bf933f5e6bf3bf2052d66577ca8', 2,2); --pass='pass16'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Ronald Araujo','6c2a5c9ead1d7d6ba86c8764d5cad395', 2,2); --pass='pass17'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Marcus Andrade','64152ab7368fc7ca6b3ef6b71e330b86', 4,2); --pass='pass18'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Rafael Monte Negro','1f61b744f2c9e8f49ae4c4965f39963f', 4,2); --pass='pass19'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Zaul Lopez','90bfa11df19a9b9d429ccfa6997104df', 4,2); --pass='pass20'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Christian Velasquez','5cddd1f7857fd4ab8095f676fcf88835', 4,2); --pass='pass21'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Emma Gracia','b9974191c2e2806abb0ed0fe229ca0f6', 4,2); --pass='pass22'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Sondra Martinez','b9b09ad3b376b828898d171e1cc2e05b', 4,2); --pass='pass23'/cajero
+
+
+
+--              SUCURSAL 3
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Alberto Del Rio','87de23031d30a01efbb97ab885de862b', 3,3); --pass='pass24'/bodeguero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Juan Morena','41e4652a622b10077ff4c22717dc57fd', 2,3); --pass='pass25'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Angel Correa','ea8852d0353318fdf7c0fa2769fe2c35', 2,3); --pass='pass26'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Nicolas Tagliafico','713fdc6c473ce5e66a6276686a3c745f', 2,3); --pass='pass27'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Antonieta Diaz','421b66e92350b35dc2e8c67948b1eb74', 2,3); --pass='pass28'/inventario
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Marcus Andrade','6cf1cd514774dd611a9a07ff764f3324', 4,3); --pass='pass29'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Rafael Monte Negro','60d589174ca2b89351a41d90a8c9c2cf', 4,3); --pass='pass30'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Zaul Lopez','d111fad6810cfa1a59069cebd3ad85c4', 4,3); --pass='pass31'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Christian Velasquez','a0ec99b64a6cb5129ec685b0c49cca44', 4,3); --pass='pass32'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Emma Gracia','7a33c0fc3823abdb9ec8b761d8268c33', 4,3); --pass='pass33'/cajero
+insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Sondra Martinez','9e8843837f5c8c0a1c8b4d662c3f17ed', 4,3); --pass='pass34'/cajero

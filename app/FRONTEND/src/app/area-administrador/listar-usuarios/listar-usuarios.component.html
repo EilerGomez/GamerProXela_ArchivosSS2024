@@ -1,0 +1,148 @@
+<div class="container mt-2 col-md-4" *ngIf="mostrarNuevoUsuario">
+    <div class="row">
+        <div class="col">
+            <div class="card my-4">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nuevo Usuario</h3>
+                </nav>
+
+                <div class="card-body">
+                    <form (ngSubmit)="crearNuevoUsuario()" #nuevoUserForm="ngForm">
+                        
+                        <div class="form-group">
+                            <label for="name">Nombre de usuario:</label>
+                            <input type="text" class="form-control" name="name" #nombreN="ngModel" [(ngModel)]="nombreUsuario" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="rol">Rol del usuario:</label>
+                            <select class="form-select" aria-label="Default select example" id="combo" #comboc="ngModel" [(ngModel)]="rolUsuario" name="rol" required>
+                                <option [value]="1">Administrador</option>
+                                <option [value]="2">De inventario</option>
+                                <option [value]="3">Bodeguero</option>
+                                <option [value]="4">Cajero</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="sucursal">Sucursal en la que trabajará:</label>
+                            <select class="form-select" aria-label="Default select example" id="comboS" #combocS="ngModel" [(ngModel)]="sucursalUsuario" name="sucursal" required>
+                                <option *ngFor="let sucursal of sucursales" [value]="sucursal.identificacion">
+                                    {{ sucursal.nombre }}
+                                </option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="pass1">Contraseña:</label>
+                            <input type="password" class="form-control" name="pass1" #pass1="ngModel" [(ngModel)]="password" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="pass2">Confirmar Contraseña:</label>
+                            <input type="password" class="form-control" name="pass2" #pass2="ngModel" [(ngModel)]="confirmPassword" required>
+                        </div>
+                        <br>
+                        <div class="text-center">
+                            <!-- Asegúrate de comparar los valores de los campos, no las referencias -->
+                            <button type="submit" class="btn btn-success mt-2 me-4"
+                                [disabled]="!nuevoUserForm.form.valid || password !== confirmPassword"> <i class="bi bi-save"></i> Guardar</button>
+                            <button class="btn btn-info" (click)="mostrarNuevoUsuario=false"> <i class="bi bi-x"></i> Cancelar</button>
+                        </div>
+                        <!-- Mostrar un mensaje de error si las contraseñas no coinciden -->
+                        <div *ngIf="password !== confirmPassword" class="alert alert-danger mt-2">
+                            Las contraseñas no coinciden.
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-2 col-md-4" *ngIf="mostrarEditar">
+    <div class="row">
+        <div class="col">
+            <div class="card my-4">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Editar Usuario</h3>
+                </nav>
+
+                <div class="card-body">
+                    <form (ngSubmit)="actualizarUsuario(usuarioEdit.identificacion,nombre.value,usuarioEdit.pass,combo.value,comboS.value)" #especialidadForm="ngForm">
+                        <label for="name">Id Usuario:</label>
+                        <input [(ngModel)]="usuarioEdit.identificacion" name="id" type="number" disabled>
+                        <br><br>
+                        <div class="form-group">
+                            <label for="name">Nombre de usuario:</label>
+                            <input [(ngModel)]="usuarioEdit.nombre" type="text" class="form-control"
+                                name="name" #nombre required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="name">Rol del usuario "{{obtenerRol(usuarioEdit.rol)}}" <br>Cambiar:</label>
+                            <select class="form-select"  aria-label="Default select example" id="combo" #combo>
+                                <option [value]="0">Continuar con la que tiene</option>
+                                <option [value]="1">Administrador</option>
+                                <option [value]="2">De inventario</option>
+                                <option [value]="3">Bodeguero</option>
+                                <option [value]="4">Cajero</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="name">Sucursal en la que opera : "{{obtenerSucursal(usuarioEdit.sucursal)}}" <br>Cambiar:</label>
+                            <select class="form-select" aria-label="Default select example" id="comboS" #comboS>
+                                <option *ngFor="let sucursal of sucursales" value="{{sucursal.identificacion}}">
+                                    {{ sucursal.nombre }}
+                            </select>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between"></div>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success mt-2 me-4"
+                                [disabled]="!especialidadForm.form.valid"><i class="bi bi-arrow-repeat"></i> Actualizar</button>
+                            <button class="btn btn-info" (click)="mostrarEditar=false"><i class="bi bi-x"></i> Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-5 pt-5" *ngIf="!mostrarNuevoUsuario">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3>Usuarios del sistema({{usuarios.length}})</h3>
+            <button class="btn btn-primary" aria-label="Agregar usuario" (click)="mostrarNuevoUsuario=true">
+                <i class="bi bi-person-add"></i> Nuevo
+            </button>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>Rol</th>
+                    <th>Sucursal</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let user of usuarios; let i = index">
+                    <td>{{user.identificacion}}</td>
+                    <td>{{user.nombre}}</td>
+                    <td>{{obtenerRol(user.rol)}}</td>
+                    <td>{{obtenerSucursal(user.sucursal)}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning me-2 col-sm-5" (click)="mostrarActualizar(user)"> <i class="bi bi-pencil"></i>   Editar</button>
+                        <button class="btn btn-danger me-2 col-sm-5" (click)="eliminarUser(user)"><i class="bi bi-trash"></i> Eliminar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,17 @@
+/* Añadir en tu archivo CSS */
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 5px; /* Espacio entre el ícono y el texto */
+}
+
+.btn-primary i {
+    font-size: 1.2rem; /* Tamaño del ícono */
+}
