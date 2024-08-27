@@ -1,0 +1,43 @@
+
+
+
+<div class="container mt-5 pt-5">
+    <div class="card">
+        <h3>Totales ({{compras.length}}) </h3>
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="me-4">Filtrar</h5>
+            <select class="form-select me-3"  aria-label="Default select example" id="combo" #combofiltro (click)="filtrarCompras(combofiltro.value)">
+                <option [value]="0">Todas</option>
+                <option [value]="1">Las de Hoy</option>
+                <option [value]="2">Variable</option>
+            </select>
+            <button class="btn btn-primary ms-3" aria-label="Agregar compra">
+                <i class="bi bi-cart-plus-fill bi-xxl"></i> Agregar
+            </button>
+            
+        </div>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Sucursal</th>
+                    <th>Fecha de compra</th>
+                    <th>Total</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let compra of compras; let i = index">
+                    <td>{{compra.codigo}}</td>
+                    <td>{{compra.sucursal}}</td>
+                    <td>{{compra.fecha}}</td>
+                    <td>{{compra.total_compra}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning me-2 col-sm-5" (click)="verDetalles(compra)"> <i class="bi bi-eye"></i>      Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

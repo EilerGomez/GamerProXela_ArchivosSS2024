@@ -8,12 +8,16 @@ function createClient(userId) {
       password: 'user1',
     },
     '2': {
-      user: 'usuario2',
-      password: 'contraseña2',
+      user: 'inventariogpx',
+      password: 'user2',
     },
     '3': {
-      user: 'usuario3',
-      password: 'contraseña2',
+      user: 'bodegagpx',
+      password: 'user3',
+    },
+    '4':{
+      user:'cajerogpx',
+      password:'user4'
     }
     // Agrega más configuraciones según sea necesario
   };

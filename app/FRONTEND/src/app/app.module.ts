@@ -14,6 +14,10 @@ import { NavbarComponent } from './navbar/navbar.component'
 import { ListarUsuariosComponent } from './area-administrador/listar-usuarios/listar-usuarios.component'
 import { UsuariosService } from './Service/usuarios.service';
 import { SucursalesService } from './Service/sucursales.service';
+import { AreaBodegaComponent } from './area-bodega/area-bodega.component';
+import { EspacioBodegaComponent } from './area-bodega/espacio-bodega/espacio-bodega.component';
+import { ComprasComponent } from './area-bodega/compras/compras.component';
+import { ComprasService } from './Service/compras.service';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,7 +26,10 @@ import { SucursalesService } from './Service/sucursales.service';
     EspacioAdminComponent,
     ManagerHomepageComponent,
     NavbarComponent,
-    ListarUsuariosComponent
+    ListarUsuariosComponent,
+    AreaBodegaComponent,
+    EspacioBodegaComponent,
+    ComprasComponent
     
   ],
   imports: [
@@ -32,7 +39,7 @@ import { SucursalesService } from './Service/sucursales.service';
     HttpClientModule
   ],
   providers: [ LoginService,SucursalesService,
-  UsuariosService],
+  UsuariosService, ComprasService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

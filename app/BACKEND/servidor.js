@@ -33,7 +33,7 @@ app.post('/connect', async (req, res) => {
   try {
     await client.connect();
     clients[rol] = client; // Guarda el cliente en el objeto
-    const result = await client.query('SELECT * from usuarios.usuarios where rol=$1 and identificacion = $2 and pass=$3;',
+    const result = await client.query('SELECT * from usuarios.usuarios where rol=$1 and identificacion = $2 and pass=$3 and activo=true;',
       [rol,id,hashedPassword]);
     if(result.rows.length>0){
       console.log("Existe la hora es como si existe el usuario");

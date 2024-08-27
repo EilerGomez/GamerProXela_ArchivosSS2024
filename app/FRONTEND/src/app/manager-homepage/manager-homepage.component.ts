@@ -21,7 +21,7 @@ export class ManagerHomepageComponent implements OnInit {
       } else if (area == "2") {
         this.router.navigate(["areaMedico"])
       } else if (area == "3") {
-        this.router.navigate(["areaPaciente"])
+        this.router.navigate(["areaBodega"])
       } else if (area == "4") {
         this.router.navigate(["areaLaboratorio"])
       }

@@ -2,7 +2,6 @@ import { Component,OnInit } from '@angular/core';
 import { UsuariosService } from 'src/app/Service/usuarios.service';
 import { SucursalesService } from 'src/app/Service/sucursales.service';
 import { Usuario } from 'src/app/Modelo/Usuario';
-import { data, error } from 'jquery';
 import { Sucursal } from 'src/app/Modelo/Sucursal';
 
 @Component({
@@ -25,7 +24,15 @@ export class ListarUsuariosComponent {
   sucursalUsuario: string  = '';
   password: string = '';
   confirmPassword: string = '';
-
+  activo:boolean=false;
+  iniciarvariables(){
+    this.nombreUsuario = '';
+    this.rolUsuario  = '';
+    this.sucursalUsuario  = '';
+    this.password = '';
+    this.confirmPassword = '';
+    this.activo=false;
+  }
   getRolDB():number{
     let stringUser = localStorage.getItem('usuario');
     let usuario:Usuario = stringUser? JSON.parse(stringUser):null;
@@ -33,6 +40,7 @@ export class ListarUsuariosComponent {
     return rol;
   }
   ngOnInit():void{
+    this.iniciarvariables();
     let stringUser = localStorage.getItem('usuario');
     let usuario:Usuario = stringUser? JSON.parse(stringUser):null;
     let rol = usuario? usuario.rol:0;
@@ -81,7 +89,7 @@ export class ListarUsuariosComponent {
     return usuario;
   }
   actualizarUsuario(id:number,nombre:String,pass:String,rol:string,sucural:string){
-    const userAct= new Usuario(id,nombre,pass,parseInt(rol),parseInt(sucural))
+    const userAct= new Usuario(id,nombre,pass,parseInt(rol),parseInt(sucural),this.usuarioEdit.activo)
     this.servicioUser.putUsuario(this.veificarRol(userAct),this.getRolDB()).subscribe(data=>{
       console.log(data)
       this.ngOnInit();
@@ -96,7 +104,7 @@ export class ListarUsuariosComponent {
     
   }
   mostrarActualizar(usuario:Usuario){
-    this.usuarioEdit=new Usuario(usuario.identificacion,usuario.nombre,usuario.pass,usuario.rol,usuario.sucursal);
+    this.usuarioEdit=new Usuario(usuario.identificacion,usuario.nombre,usuario.pass,usuario.rol,usuario.sucursal,usuario.activo);
     this.usuarioEdit=usuario;
     this.mostrarEditar=true;
     this.mostrarNuevoUsuario=false
@@ -113,7 +121,7 @@ export class ListarUsuariosComponent {
   }
 
   crearNuevoUsuario(){
-    const userAct= new Usuario(10,this.nombreUsuario,this.confirmPassword,parseInt(this.rolUsuario),parseInt(this.sucursalUsuario))
+    const userAct= new Usuario(10,this.nombreUsuario,this.confirmPassword,parseInt(this.rolUsuario),parseInt(this.sucursalUsuario),this.activo)
     this.servicioUser.postUsuario(userAct,this.getRolDB()).subscribe(data=>{
       alert("Se ha creado el nuevo usuario!")
       this.mostrarNuevoUsuario=false;
@@ -123,4 +131,9 @@ export class ListarUsuariosComponent {
       this.ngOnInit()
     })
   }
+
+  mostrarActivo(activo: boolean): string {
+    return activo ? "SI" : "NO";
+  }
+  
 }

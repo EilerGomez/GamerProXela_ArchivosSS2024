@@ -56,7 +56,7 @@ function usuariosRouter(clients) {
     });
 
     router.put('/usuarios', async (req, res) => {
-        const { identificacion, nombre, pass, rol, sucursal } = req.body;
+        const { identificacion, nombre, pass, rol, sucursal,activo } = req.body;
         const { roldb } = req.query;
         const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
     
@@ -70,8 +70,8 @@ function usuariosRouter(clients) {
     
         try {
             const result = await client.query(
-                'UPDATE usuarios.usuarios SET pass = $1, nombre = $2, rol = $3, sucursal = $4 WHERE identificacion = $5 RETURNING *;',
-                [pass, nombre, rol, sucursal, identificacion]
+                'UPDATE usuarios.usuarios SET pass = $1, nombre = $2, rol = $3, sucursal = $4, activo=$5 WHERE identificacion = $6 RETURNING *;',
+                [pass, nombre, rol, sucursal,activo, identificacion]
             );
     
             if (result.rowCount === 0) {
@@ -119,7 +119,7 @@ function usuariosRouter(clients) {
     
     router.post('/usuarios', async (req, res) => {
         const { roldb } = req.query;
-        const { identificacion, nombre, pass, rol, sucursal } = req.body;
+        const { identificacion, nombre, pass, rol, sucursal,activo } = req.body;
         const hashedPassword = crypto.createHash('md5').update(pass).digest('hex');
         const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
         if (!client) {
@@ -132,8 +132,8 @@ function usuariosRouter(clients) {
     
         try {
             const result = await client.query(
-                'INSERT INTO usuarios.usuarios(nombre, pass, rol, sucursal) VALUES ($1, $2, $3, $4) RETURNING *;',
-                [nombre, hashedPassword, rol, sucursal]
+                'INSERT INTO usuarios.usuarios(nombre, pass, rol, sucursal,activo) VALUES ($1, $2, $3, $4,$5) RETURNING *;',
+                [nombre, hashedPassword, rol, sucursal,activo]
             );
     
             if (result.rowCount === 0) {

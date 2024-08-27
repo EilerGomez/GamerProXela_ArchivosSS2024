@@ -41,7 +41,7 @@ CREATE DATABASE gamerproxela;
 
 CREATE TABLE sucursales.sucursal(
 	identificacion SERIAL NOT NULL,
-	nombre CHARACTER VARYIN••••••••G(50) NOT NULL,
+	nombre CHARACTER VARYING(50) NOT NULL,
 	direccion CHARACTER VARYING(80) NOT NULL,
 	PRIMARY KEY(identificacion)
 );
@@ -52,6 +52,7 @@ CREATE TABLE usuarios.usuarios(
 	pass CHARACTER VARYING(80) NOT NULL,
 	rol INTEGER NOT NULL,
 	sucursal INTEGER NOT NULL,
+	activo BOOLEAN NOT NULL,
 	PRIMARY KEY(identificacion),
 	CONSTRAINT user_sucursal_fk FOREIGN KEY (sucursal)
 	REFERENCES sucursales.sucursal(identificacion)
@@ -218,9 +219,18 @@ GRANT USAGE, SELECT ON SEQUENCE usuarios.usuarios_identificacion_seq TO admingpx
 
 
 --PARA EL DE BODEGAS
+GRANT USAGE ON SCHEMA usuarios TO bodegagpx; --permiso de esquema
+GRANT SELECT ON usuarios.usuarios TO bodegagpx; --permiso para la tabla
+
 GRANT SELECT, INSERT ON productos.productos TO bodegagpx;
 GRANT SELECT, INSERT, UPDATE, DELETE
 ON bodegas.compra, bodegas.productos_compra, sucursales.productos_sucursal
 TO bodegagpx;
+GRANT USAGE, SELECT ON SEQUENCE bodegas.compra_codigo_seq TO bodegagpx; --permiso para la secuencia de iteracion usuarios
+
+
+GRANT USAGE ON SCHEMA sucursales TO bodegagpx; --permiso de esquema
+GRANT SELECT ON sucursales.sucursal TO bodegagpx;--permiso de tabla
+
 
 

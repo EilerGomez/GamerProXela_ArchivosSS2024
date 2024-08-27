@@ -4,13 +4,15 @@ export class Usuario{
     pass!:String;
     rol!:number;
     sucursal!:number;
+    activo!:boolean
 
-    constructor(id:number,nombre:String,pass:String,rol:number,sucural:number){
+    constructor(id:number,nombre:String,pass:String,rol:number,sucural:number,activo:boolean){
         this.identificacion=id;
         this.nombre=nombre;
         this.pass=pass;
         this.rol=rol;
         this.sucursal=sucural;
+        this.activo=activo
     }
     
 

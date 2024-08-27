@@ -60,3 +60,8 @@ insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Zaul Lopez','d
 insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Christian Velasquez','a0ec99b64a6cb5129ec685b0c49cca44', 4,3); --pass='pass32'/cajero
 insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Emma Gracia','7a33c0fc3823abdb9ec8b761d8268c33', 4,3); --pass='pass33'/cajero
 insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Sondra Martinez','9e8843837f5c8c0a1c8b4d662c3f17ed', 4,3); --pass='pass34'/cajero
+
+
+--alterar la tabla para que todos esten activos
+ALTER TABLE IF EXISTS usuarios.usuarios
+ADD COLUMN activo boolean NOT NULL DEFAULT true;

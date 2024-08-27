@@ -4,7 +4,8 @@ import { AreaAdministradorComponent } from './area-administrador/area-administra
 import { LoginComponent } from './login/login.component'
 import { ManagerHomepageComponent } from './manager-homepage/manager-homepage.component'
 import { ListarUsuariosComponent } from './area-administrador/listar-usuarios/listar-usuarios.component'
-
+import { AreaBodegaComponent } from './area-bodega/area-bodega.component';
+import { ComprasComponent } from './area-bodega/compras/compras.component';
 
 const routes: Routes = [
 
@@ -16,7 +17,12 @@ const routes: Routes = [
       {path:'listarUsuarios',component:ListarUsuariosComponent}
     ]
   },
-  { path: 'login', component: LoginComponent }
+  { path: 'login', component: LoginComponent },
+  {path:'areaBodega',component:AreaBodegaComponent,
+    children:[
+      {path:'compras', component:ComprasComponent}
+    ]
+  }
 ];
 
 @NgModule({
