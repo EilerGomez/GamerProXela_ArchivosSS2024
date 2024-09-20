@@ -1,12 +1,14 @@
 export class Compra{
     codigo!:number;
-    sucursal!:String;
+    sucursal!:number;
     fecha!:String;
     total_compra!:number
+    usuario!:number
     constructor(){
         this.codigo=NaN;
-        this.sucursal='';
+        this.sucursal=NaN;
         this.fecha=''
         this.total_compra=NaN
+        this.usuario=NaN
     }
 }

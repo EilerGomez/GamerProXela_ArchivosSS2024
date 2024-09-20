@@ -18,6 +18,8 @@ import { AreaBodegaComponent } from './area-bodega/area-bodega.component';
 import { EspacioBodegaComponent } from './area-bodega/espacio-bodega/espacio-bodega.component';
 import { ComprasComponent } from './area-bodega/compras/compras.component';
 import { ComprasService } from './Service/compras.service';
+import { ProductosService } from './Service/productos.service';
+import { AddProductosBodegaComponent } from './area-bodega/add-productos-bodega/add-productos-bodega.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -29,7 +31,8 @@ import { ComprasService } from './Service/compras.service';
     ListarUsuariosComponent,
     AreaBodegaComponent,
     EspacioBodegaComponent,
-    ComprasComponent
+    ComprasComponent,
+    AddProductosBodegaComponent
     
   ],
   imports: [
@@ -39,7 +42,7 @@ import { ComprasService } from './Service/compras.service';
     HttpClientModule
   ],
   providers: [ LoginService,SucursalesService,
-  UsuariosService, ComprasService],
+  UsuariosService, ComprasService,ProductosService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

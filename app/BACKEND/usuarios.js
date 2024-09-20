@@ -22,14 +22,14 @@ function usuariosRouter(clients) {
         }
 
         try {
-            const result = await client.query('SELECT * FROM usuarios.usuarios order by identificacion;');
+            const result = await client.query('select * from usuarios.todosusuarios;');
             res.status(200).json(result.rows);
         } catch (err) {
             res.status(500).send('Error al obtener las compras: ' + err.message);
         }
     });
 
-    // OBTENER UNA COMPRA POR ID
+    // OBTENER USUARIO POR ID
     router.get('/usuarios/:id', async (req, res) => {
         const { id } = req.params;
         const { roldb } = req.query;
@@ -45,7 +45,7 @@ function usuariosRouter(clients) {
         }
 
         try {
-            const result = await client.query('SELECT * FROM usuarios.usuarios WHERE identificacion = $1;', [id]);
+            const result = await client.query('SELECT * FROM usuarios.getUserById ($1);', [id]);
             if (result.rows.length === 0) {
                 return res.status(404).send('usuarios no encontrado');
             }
@@ -70,7 +70,7 @@ function usuariosRouter(clients) {
     
         try {
             const result = await client.query(
-                'UPDATE usuarios.usuarios SET pass = $1, nombre = $2, rol = $3, sucursal = $4, activo=$5 WHERE identificacion = $6 RETURNING *;',
+                'SELECT usuarios.updateUser($1, $2, $3, $4, $5, $6);',
                 [pass, nombre, rol, sucursal,activo, identificacion]
             );
     
@@ -101,7 +101,7 @@ function usuariosRouter(clients) {
     
         try {
             const result = await client.query(
-                'DELETE FROM usuarios.usuarios WHERE identificacion = $1 RETURNING *;',
+                'select usuarios.deleteUser($1);',
                 [ identificacion]
             );
     
@@ -132,8 +132,8 @@ function usuariosRouter(clients) {
     
         try {
             const result = await client.query(
-                'INSERT INTO usuarios.usuarios(nombre, pass, rol, sucursal,activo) VALUES ($1, $2, $3, $4,$5) RETURNING *;',
-                [nombre, hashedPassword, rol, sucursal,activo]
+                'CALL usuarios.insertUser($1, $2, $3, $4, $5);',
+                [hashedPassword, nombre, rol, sucursal,activo]
             );
     
             if (result.rowCount === 0) {

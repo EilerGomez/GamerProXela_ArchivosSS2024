@@ -65,3 +65,266 @@ insert into usuarios.usuarios(nombre, pass,rol,sucursal) values ('Sondra Martine
 --alterar la tabla para que todos esten activos
 ALTER TABLE IF EXISTS usuarios.usuarios
 ADD COLUMN activo boolean NOT NULL DEFAULT true;
+
+-- insertando la funcion para llamar a los usuarios
+CREATE OR REPLACE FUNCTION usuarios.getUser(rol_param INTEGER, ident INTEGER, passw VARCHAR)
+RETURNS TABLE(identificacion integer, nombre VARCHAR, pass VARCHAR, rol INTEGER, sucursal INTEGER, activo BOOLEAN)
+AS $$
+BEGIN
+	RETURN QUERY
+		SELECT u.identificacion, u.nombre, u.pass, u.rol, u.sucursal, u.activo
+		FROM usuarios.usuarios u
+		WHERE u.rol = rol_param and u.identificacion=ident and u.pass=passw and u.activo = true;
+END;
+$$ LANGUAGE plpgsql;
+
+-- dando permisos a esa funcion
+GRANT EXECUTE ON FUNCTION usuarios.getUser(INT,INT,VARCHAR) TO admingpx;
+GRANT EXECUTE ON FUNCTION usuarios.getUser(INT,INT,VARCHAR) TO inventariogpx;
+GRANT EXECUTE ON FUNCTION usuarios.getUser(INT,INT,VARCHAR) TO bodegagpx;
+GRANT EXECUTE ON FUNCTION usuarios.getUser(INT,INT,VARCHAR) TO cajerogpx;
+
+
+-- funcion para llamar a un usuario por id
+CREATE OR REPLACE FUNCTION usuarios.getUserById(ident INTEGER)
+RETURNS TABLE(identificacion integer, nombre VARCHAR, pass VARCHAR, rol INTEGER, sucursal INTEGER, activo BOOLEAN)
+AS $$
+BEGIN
+	RETURN QUERY
+		SELECT u.identificacion, u.nombre, u.pass, u.rol, u.sucursal, u.activo
+		FROM usuarios.usuarios u
+		WHERE u.identificacion=ident;
+END;
+$$ LANGUAGE plpgsql;
+
+GRANT EXECUTE ON FUNCTION usuarios.getUserById(INT) TO admingpx;
+
+--ACTUALIZACION DE UN USUARIO
+CREATE OR REPLACE FUNCTION usuarios.updateUser(
+	p_pass VARCHAR,
+    p_nombre VARCHAR,
+    p_rol INTEGER,
+    p_sucursal INTEGER,
+    p_activo BOOLEAN,
+	p_identificacion INTEGER
+)
+RETURNS VOID
+AS $$
+BEGIN
+    UPDATE usuarios.usuarios
+    SET
+        nombre = p_nombre,
+        pass = p_pass,
+        rol = p_rol,
+        sucursal = p_sucursal,
+        activo = p_activo
+    WHERE identificacion = p_identificacion;
+END;
+$$ LANGUAGE plpgsql;
+GRANT EXECUTE ON FUNCTION usuarios.updateUser(VARCHAR,VARCHAR,INTEGER,INTEGER,BOOLEAN,INTEGER) TO admingpx;
+
+-- insertar o actualizar un usuario
+
+
+
+CREATE OR REPLACE FUNCTION usuarios.updateUser(
+    p_pass VARCHAR,
+    p_nombre VARCHAR,
+    p_rol INTEGER,
+    p_sucursal INTEGER,
+    p_activo BOOLEAN,
+    p_identificacion INTEGER
+)
+RETURNS VOID
+AS $$
+BEGIN
+
+        UPDATE usuarios.usuarios
+        SET
+            nombre = p_nombre,
+            pass = p_pass,
+            rol = p_rol,
+            sucursal = p_sucursal,
+            activo = p_activo
+        WHERE identificacion = p_identificacion;
+
+END;
+$$ LANGUAGE plpgsql;
+
+GRANT EXECUTE ON FUNCTION usuarios.updateOrInsertUser(VARCHAR,VARCHAR,INTEGER,INTEGER,BOOLEAN,INTEGER) TO admingpx;
+
+-- eliminar usuario
+CREATE OR REPLACE FUNCTION usuarios.deleteUser(ident INTEGER)
+RETURNS VOID
+AS $$
+BEGIN
+	DELETE from usuarios.usuarios where identificacion=ident;
+END;
+$$ LANGUAGE plpgsql;
+GRANT EXECUTE ON FUNCTION usuarios.deleteUser(INTEGER) TO admingpx;
+
+
+-- crear usuario
+
+CREATE OR REPLACE PROCEDURE usuarios.insertUser(
+    p_pass VARCHAR,
+    p_nombre VARCHAR,
+    p_rol INTEGER,
+    p_sucursal INTEGER,
+    p_activo BOOLEAN
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO usuarios.usuarios (nombre, pass, rol,sucursal,activo)
+    VALUES (p_nombre, p_pass, p_rol, p_sucursal,p_activo);
+END;
+$$;
+GRANT EXECUTE ON PROCEDURE usuarios.insertUser TO admingpx;
+
+-- funcion para traer productos segun la sucursal
+CREATE OR REPLACE FUNCTION sucursales.getProductosSucursal(idS INTEGER)
+RETURNS TABLE(codigo integer, nombre VARCHAR, precio_unitario_venta NUMERIC, sucursal VARCHAR,
+cantidad_bodega INTEGER, pasillo_bodega INTEGER)
+AS $$
+BEGIN
+	RETURN QUERY
+		select p.codigo, p.nombre, p.precio_unitario_venta, s.nombre as sucursal, ps.cantidad_bodega, ps.pasillo_bodega
+		from sucursales.productos_sucursal ps
+		left join productos.productos p on (p.codigo=ps.id_producto)
+		left join sucursales.sucursal s on(s.identificacion=ps.id_sucursal) where ps.id_sucursal=idS;
+END;
+$$ LANGUAGE plpgsql;
+
+-- funcion para insertar nueva compra y me devuelva el id de la nueva compra
+
+CREATE OR REPLACE FUNCTION bodegas.insertCompra(
+    c_usuario INTEGER,
+    c_sucursal INTEGER,
+    c_total_compra NUMERIC
+)
+RETURNS TABLE(codigo_compra INT)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+
+    RETURN QUERY
+    INSERT INTO bodegas.compra (usuario, sucursal, fecha,total_compra)
+    VALUES (c_usuario, c_sucursal, CURRENT_DATE,c_total_compra)
+    RETURNING codigo;
+END;
+$$;
+
+
+--agregando trigger para saber si hay dinero suficiente para la compra
+
+CREATE OR REPLACE FUNCTION bodegas.comprobarDineroSuficiente()
+RETURNS TRIGGER AS $$
+DECLARE din DOUBLE PRECISION;
+BEGIN
+
+	SELECT  s.dinero_caja INTO din FROM bodegas.compra c
+	LEFT JOIN sucursales.sucursal s ON(s.identificacion=c.sucursal)
+	WHERE c.codigo=NEW.id_compra;
+  IF NEW.subtotal>din THEN
+    RAISE EXCEPTION 'cantidad de dinero insuficiente, actualmente solo hay %',din;
+  END IF;
+    RETURN NEW;
+END;
+
+$$ LANGUAGE plpgsql;
+CREATE TRIGGER trigger_comprobar_dinero
+BEFORE INSERT ON bodegas.productos_compra
+FOR EACH ROW
+EXECUTE FUNCTION bodegas.comprobarDineroSuficiente();
+
+
+
+-- trigger para descontar el dinero cuando de hace una nueva compra
+
+CREATE OR REPLACE FUNCTION bodegas.actualizarDineroSucursal()
+RETURNS TRIGGER AS $$
+DECLARE idsucursal INTEGER;
+BEGIN
+	SELECT c.sucursal INTO idsucursal FROM bodegas.compra c
+	LEFT JOIN sucursales.sucursal s ON(s.identificacion=c.sucursal)
+	WHERE c.codigo=NEW.id_compra;
+
+  UPDATE sucursales.sucursal
+  SET dinero_caja = dinero_caja - NEW.subtotal
+  WHERE identificacion = idsucursal;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_actualizar_dineroSucursal
+AFTER INSERT ON bodegas.productos_compra
+FOR EACH ROW
+EXECUTE FUNCTION bodegas.actualizarDineroSucursal();
+
+
+--- proceso para insertar productos en la factura de la compra
+
+CREATE OR REPLACE PROCEDURE bodegas.insertarProductoCompra(
+    pc_idcompra INTEGER,
+    pc_idproducto INTEGER,
+    pc_cantidad INTEGER,
+    pc_precioUnitario NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO bodegas.productos_compra (id_compra, id_producto, cantidad,precio_unitario,subtotal)
+    VALUES (pc_idcompra, pc_idproducto, pc_cantidad, pc_precioUnitario,pc_cantidad*pc_precioUnitario);
+END;
+$$;
+
+
+-- funcion para llamar los productos que no estan incluidos en una SUCURSAL
+CREATE OR REPLACE FUNCTION sucursales.traerProductosNoIncluidos(idS INTEGER)
+RETURNS TABLE(codigo integer, nombre VARCHAR, precio_unitario_venta NUMERIC)
+AS $$
+BEGIN
+	RETURN QUERY
+		SELECT p.codigo, p.nombre, p.precio_unitario_venta
+		FROM productos.productos p
+		LEFT JOIN sucursales.productos_sucursal ps ON ps.id_producto = p.codigo
+		AND ps.id_sucursal = idS
+		WHERE ps.id_producto IS NULL;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- proceso para agregar un producto a una sucursal
+CREATE OR REPLACE PROCEDURE sucursales.insertProductoSucursal(
+    ps_idproducto INTEGER,
+    ps_idsucursal INTEGER,
+    ps_cantidadestanteria INTEGER,
+    ps_cantidadbodega INTEGER,
+	ps_pasillobodega INTEGER,
+	ps_pasilloestanteria INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO sucursales.productos_sucursal (
+	id_producto, id_sucursal, cantidad_estanteria,cantidad_bodega,pasillo_bodega,pasillo_estanteria)
+    VALUES (ps_idproducto, ps_idsucursal, ps_cantidadestanteria, ps_cantidadbodega,ps_pasillobodega,ps_pasilloestanteria);
+END;
+$$;
+
+
+-- proceso para insertar un nuevo producto
+CREATE OR REPLACE PROCEDURE productos.insertarNuevoProducto(
+    p_nombre VARCHAR,
+    p_precio_unitario_venta NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+	INSERT INTO productos.productos (nombre, precio_unitario_venta, en_venta)
+	VALUES (p_nombre, p_precio_unitario_venta, true);
+END;
+$$;
+

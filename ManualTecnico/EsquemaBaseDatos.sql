@@ -43,6 +43,7 @@ CREATE TABLE sucursales.sucursal(
 	identificacion SERIAL NOT NULL,
 	nombre CHARACTER VARYING(50) NOT NULL,
 	direccion CHARACTER VARYING(80) NOT NULL,
+	dinero_caja DOUBLE PRECISION NOT NULL,
 	PRIMARY KEY(identificacion)
 );
 
@@ -74,9 +75,10 @@ CREATE TABLE cajeros.cajas(
 );
 
 CREATE TABLE productos.productos(
-	codigo INTEGER NOT NULL,
+	codigo SERIAL NOT NULL,
 	nombre CHARACTER VARYING (80) NOT NULL,
 	precio_unitario_venta DECIMAL NOT NULL,
+	en_venta BOOLEAN NOT NULL,
 	PRIMARY KEY(codigo)
 );
 

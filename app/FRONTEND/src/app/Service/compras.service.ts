@@ -12,4 +12,13 @@ export class ComprasService {
   getCompras(rol:number){
     return this.http.get<Compra[]>(`${this.Url}?roldb=${rol}`);
   }
+
+  nuevaCompra(compra:Compra, rol:number){
+    return this.http.post<any>(`${this.Url}?roldb=${rol}`,compra);
+  }
+
+  deleteCompra(rol:number, idC:number){
+    return this.http.delete(`${this.Url}/${idC}?roldb=${rol}`);
+  }
+
 }

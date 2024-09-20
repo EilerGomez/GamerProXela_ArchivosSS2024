@@ -4,6 +4,7 @@ const createClient = require('./connection');
 const comprasRouter = require('./compras');
 const usuariosRouter = require ('./usuarios');
 const sucursalesRouter=require('./sucursal')
+const productosRouter=require('./productos')
 const crypto = require('crypto');
 
 const app = express();
@@ -18,6 +19,7 @@ const clients = {};
 app.use('/api', comprasRouter(clients)); // Pasa el objeto de clientes al router
 app.use('/api',usuariosRouter(clients));
 app.use('/api',sucursalesRouter(clients));
+app.use('/api',productosRouter(clients));
 // Ruta de conexion de un usuario segun su rol
 app.post('/connect', async (req, res) => {
   const {id, password, rol}=req.body;
@@ -33,7 +35,7 @@ app.post('/connect', async (req, res) => {
   try {
     await client.connect();
     clients[rol] = client; // Guarda el cliente en el objeto
-    const result = await client.query('SELECT * from usuarios.usuarios where rol=$1 and identificacion = $2 and pass=$3 and activo=true;',
+    const result = await client.query('SELECT * from usuarios.getUser($1,$2,$3);',
       [rol,id,hashedPassword]);
     if(result.rows.length>0){
       console.log("Existe la hora es como si existe el usuario");

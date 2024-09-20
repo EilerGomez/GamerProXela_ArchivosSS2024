@@ -1,0 +1,96 @@
+
+
+<div class="container mt-2 col-md-10" *ngIf="mostrarNuevo">
+    <div class="row">
+        <div class="col">
+            <div class="card my-10">
+                
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary"
+                        (click)="dejarDeMostrarNuevo()"><i class="bi bi-add"></i> Aceptar</button>
+                </div> 
+                <div class="card-body">
+                    <form (ngSubmit)="agregarNuevoProducto(nuevoProducto)"  #nuevoProducto="ngForm">
+                        <div class="form-group">
+                            <label for="nombre">Ingrese el nombre del nuevo producto</label>
+                            <input type="text" class="form-control" name="nombre" [(ngModel)]="nombreNuevoProducto"  required>
+                        </div>                        
+                        <br>
+                        <div class="form-group">
+                            <label for="precioVenta">Ingrese el precio de venta del producto</label>
+                            <input type="number" class="form-control" name="precioVenta" [(ngModel)]="precioventaNuevoProducto"  required>
+                        </div>                        
+                        <br>
+                        <div>
+                            <button type="submit" class="btn btn-success"
+                                [disabled]="!nuevoProducto.form.valid"><i class="bi bi-add"></i> Agregar</button>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-2 col-md-10" *ngIf="mostrarNuevoIncluido">
+    <div class="row">
+        <div class="col">
+            <div class="card my-10">
+                
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary"
+                        (click)="dejarDeMostrarNuevoIncluido()"><i class="bi bi-add"></i> Aceptar</button>
+                </div> 
+                <div class="card-body">
+                    <form (ngSubmit)="agregarNuevoIncluido(nuevoIncluidoForm)"  #nuevoIncluidoForm="ngForm">
+                        
+                        <div class="form-group">
+                            <label for="precio">Ingrese el pasillo en la bodega donde almacenara el producto {{idProductoIncluido}}</label>
+                            <input type="number" class="form-control" name="pasillo" [(ngModel)]="pasillobodega"  required>
+                        </div>                        
+                        <br>
+                        <div>
+                            <button type="submit" class="btn btn-success"
+                                [disabled]="!nuevoIncluidoForm.form.valid"><i class="bi bi-add"></i> Agregar</button>
+                        </div> 
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 pt-5" *ngIf="!mostrarNuevoIncluido && !mostrarNuevo" >
+    <div class="card">
+        <h3>Productos para agregar al sucursal</h3>
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary me-3 mt-2"
+                (click)="mostrarNuevo=true">
+                <i class="bi bi-plus"></i> Agregar
+            </button>
+        </div>
+        <br>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Precio de venta</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of productos; let i = index">
+                    <td>{{p.codigo}}</td>
+                    <td>{{p.nombre}}</td>
+                    <td>{{p.precio_unitario_venta}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-success me-2 col-sm-10" (click)="addIncluido(p)" >      Agregar a sucursal</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

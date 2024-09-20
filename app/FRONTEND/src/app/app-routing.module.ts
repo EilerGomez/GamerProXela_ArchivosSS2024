@@ -6,6 +6,7 @@ import { ManagerHomepageComponent } from './manager-homepage/manager-homepage.co
 import { ListarUsuariosComponent } from './area-administrador/listar-usuarios/listar-usuarios.component'
 import { AreaBodegaComponent } from './area-bodega/area-bodega.component';
 import { ComprasComponent } from './area-bodega/compras/compras.component';
+import { AddProductosBodegaComponent } from './area-bodega/add-productos-bodega/add-productos-bodega.component';
 
 const routes: Routes = [
 
@@ -20,7 +21,8 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent },
   {path:'areaBodega',component:AreaBodegaComponent,
     children:[
-      {path:'compras', component:ComprasComponent}
+      {path:'compras', component:ComprasComponent},
+      {path:'addProductoBodega',component:AddProductosBodegaComponent}
     ]
   }
 ];
