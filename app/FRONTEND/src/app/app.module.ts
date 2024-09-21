@@ -20,6 +20,11 @@ import { ComprasComponent } from './area-bodega/compras/compras.component';
 import { ComprasService } from './Service/compras.service';
 import { ProductosService } from './Service/productos.service';
 import { AddProductosBodegaComponent } from './area-bodega/add-productos-bodega/add-productos-bodega.component';
+import { AreaInventarioComponent } from './area-inventario/area-inventario.component';
+import { EspacioInventarioComponent } from './area-inventario/espacio-inventario/espacio-inventario.component';
+import { TodosProductosComponent } from './area-bodega/todos-productos/todos-productos.component';
+import { TrasladarProductosComponent } from './area-inventario/trasladar-productos/trasladar-productos.component';
+import { ConsultarProductosComponent } from './area-inventario/consultar-productos/consultar-productos.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -32,7 +37,12 @@ import { AddProductosBodegaComponent } from './area-bodega/add-productos-bodega/
     AreaBodegaComponent,
     EspacioBodegaComponent,
     ComprasComponent,
-    AddProductosBodegaComponent
+    AddProductosBodegaComponent,
+    AreaInventarioComponent,
+    EspacioInventarioComponent,
+    TodosProductosComponent,
+    TrasladarProductosComponent,
+    ConsultarProductosComponent
     
   ],
   imports: [

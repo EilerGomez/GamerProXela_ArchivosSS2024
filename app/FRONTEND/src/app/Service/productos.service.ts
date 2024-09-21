@@ -34,7 +34,10 @@ export class ProductosService {
 
   nuevoProducto(p:Producto,rol:number){
     return this.http.post(`${this.Url}/?roldb=${rol}`,p);
+  }
 
+  pasarProductosBodegaAEstanteria(p:Producto, rol:number){
+    return this.http.put(`${this.Url}sucursal?roldb=${rol}`, p);
   }
 
 

@@ -44,7 +44,7 @@ function comprasRouter(clients) {
         }
 
         try {
-            const result = await client.query('select c.codigo, s.nombre AS sucursal, c.fecha, c.total_compra from bodegas.compra c join sucursales.sucursal s on(c.sucursal=s.identificacion) order by c.codigo;');
+            const result = await client.query('select c.codigo, s.nombre AS sucursal, c.fecha, c.total_compra from bodegas.compra c join sucursales.sucursal s on(c.sucursal=s.identificacion) order by c.codigo desc;');
             res.status(200).json(result.rows);
         } catch (err) {
             res.status(500).send('Error al obtener las compras: ' + err.message);

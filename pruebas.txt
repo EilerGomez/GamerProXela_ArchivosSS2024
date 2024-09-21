@@ -185,11 +185,11 @@ GRANT EXECUTE ON PROCEDURE usuarios.insertUser TO admingpx;
 -- funcion para traer productos segun la sucursal
 CREATE OR REPLACE FUNCTION sucursales.getProductosSucursal(idS INTEGER)
 RETURNS TABLE(codigo integer, nombre VARCHAR, precio_unitario_venta NUMERIC, sucursal VARCHAR,
-cantidad_bodega INTEGER, pasillo_bodega INTEGER)
+cantidad_bodega INTEGER, pasillo_bodega INTEGER,pasillo_estanteria INTEGER, cantidad_estanteria INTEGER)
 AS $$
 BEGIN
 	RETURN QUERY
-		select p.codigo, p.nombre, p.precio_unitario_venta, s.nombre as sucursal, ps.cantidad_bodega, ps.pasillo_bodega
+		select p.codigo, p.nombre, p.precio_unitario_venta, s.nombre as sucursal, ps.cantidad_bodega, ps.pasillo_bodega, ps.pasillo_estanteria,ps.cantidad_estanteria
 		from sucursales.productos_sucursal ps
 		left join productos.productos p on (p.codigo=ps.id_producto)
 		left join sucursales.sucursal s on(s.identificacion=ps.id_sucursal) where ps.id_sucursal=idS;
@@ -325,6 +325,30 @@ AS $$
 BEGIN
 	INSERT INTO productos.productos (nombre, precio_unitario_venta, en_venta)
 	VALUES (p_nombre, p_precio_unitario_venta, true);
+END;
+$$;
+
+-- creando procedimiento para insertar productos de bodegas a sucursales
+CREATE OR REPLACE PROCEDURE sucursales.pasarProductosEstanteria(
+    ps_idproducto INTEGER,
+    ps_idsucursal INTEGER,
+    ps_cantidadpasarestanteria INTEGER,
+    ps_pasilloestanteria INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE cpbodega INTEGER;
+BEGIN
+	SELECT  cantidad_bodega INTO cpbodega FROM sucursales.productos_sucursal
+	WHERE id_producto = ps_idproducto and id_sucursal=ps_idsucursal;
+	IF cpbodega<ps_cantidadpasarestanteria THEN
+		    RAISE EXCEPTION 'No hay esa cantidad de productos en bodegas';
+	ELSE
+	UPDATE sucursales.productos_sucursal SET pasillo_estanteria=ps_pasilloestanteria,
+		cantidad_estanteria=cantidad_estanteria+ps_cantidadpasarestanteria,
+		cantidad_bodega=cantidad_bodega-ps_cantidadpasarestanteria
+		WHERE id_producto = ps_idproducto AND id_sucursal = ps_idsucursal;
+	END IF;
 END;
 $$;
 

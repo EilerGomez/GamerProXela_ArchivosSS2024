@@ -1,0 +1,26 @@
+
+<div class="container mt-5 pt-5" >
+    <div class="card">
+        <h3>Productos en esta sucursal total: {{productos.length}}</h3>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Nombre</th>
+                    <th>Precio de venta</th>
+                    <th>Cantidad en Bodega</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let p of productos; let i = index">
+                    <td>{{p.codigo}}</td>
+                    <td>{{p.nombre}}</td>
+                    <td>{{p.precio_unitario_venta}}</td>
+                    <td>{{p.cantidad_bodega}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+

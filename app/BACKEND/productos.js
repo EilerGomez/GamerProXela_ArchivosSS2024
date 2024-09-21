@@ -29,7 +29,7 @@ function usuariosRouter(clients) {
             }
             res.status(200).json(result.rows);
         } catch (err) {
-            res.status(500).send('Error al obtener la compra: ' + err.message);
+            res.status(500).send('Error al obtener los productos: ' + err.message);
         }
     });
 
@@ -89,35 +89,35 @@ function usuariosRouter(clients) {
  
 
 
-
-    router.put('/usuarios', async (req, res) => {
-        const { identificacion, nombre, pass, rol, sucursal,activo } = req.body;
+    // aca para salar productos de bodega para estanteria
+    router.put('/productossucursal', async (req, res) => {
         const { roldb } = req.query;
+        const { codigo, sucursal,pasillo_estanteria,cantidad_estanteria } = req.body;
         const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
     
         if (!client) {
             return res.status(400).send('Usuario no conectado. Conéctese primero usando /connect/:id');
         }
     
-        if (!identificacion || !nombre || !pass || !rol || !sucursal) {
+        if (!codigo || !sucursal || !pasillo_estanteria || !cantidad_estanteria) {
             return res.status(400).send('Todos los campos son obligatorios');
         }
     
         try {
             const result = await client.query(
-                'SELECT usuarios.updateUser($1, $2, $3, $4, $5, $6);',
-                [pass, nombre, rol, sucursal,activo, identificacion]
+                'call sucursales.pasarProductosEstanteria($1,$2,$3,$4);',
+                [codigo, parseInt(sucursal), cantidad_estanteria, pasillo_estanteria]
             );
     
             if (result.rowCount === 0) {
-                return res.status(404).send('Usuario no encontrado o no actualizado');
+                return res.status(404).send('Error al actualizar productos_sucursales');
             }
             
             // Devolver el usuario actualizado
             res.status(200).json(result.rows[0]); 
         } catch (err) {
-            console.error('Error al actualizar usuario:', err.message);
-            res.status(500).send('Error al actualizar usuario');
+            console.error('Error al actualizar productos_sucursalesss:', err.message);
+            res.status(500).send('Error al actualizar  productos_sucursal');
         }
     });
 

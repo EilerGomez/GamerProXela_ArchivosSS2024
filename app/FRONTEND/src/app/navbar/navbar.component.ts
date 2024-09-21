@@ -16,6 +16,24 @@ export class NavbarComponent {
   userLoggedIn() {
     return localStorage.getItem('usuario') ? true : false;
   }
+  getSucursal(){
+    let stringUser = localStorage.getItem('usuario');
+    let usuario:Usuario = stringUser? JSON.parse(stringUser):null;
+    let suc = usuario? usuario.sucursal:0;
+    return suc;
+  }
+  mostrarSucursal(){
+    switch (this.getSucursal()) {
+      case 1:
+        return 'Sucursal Parque';
+      case 2:
+        return 'Sucursal Centro1';
+      case 3:
+        return 'Sucursal Centro2';
+      default:
+        return 'desconocido';
+    }
+  }
 
   logOut() {
     localStorage.removeItem('usuario');
