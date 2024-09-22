@@ -352,3 +352,148 @@ BEGIN
 END;
 $$;
 
+
+-- creando procedimiento para insertar cajas con un usuario cajero
+CREATE OR REPLACE PROCEDURE cajeros.insertCajas(
+    c_usuario INTEGER,
+    c_sucursal INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+DECLARE c_caja INTEGER;
+BEGIN
+	SELECT codigo INTO c_caja FROM cajeros.cajas WHERE sucursal=c_sucursal ORDER BY codigo DESC LIMIT 1;
+
+	IF c_caja =NULL THEN
+		INSERT INTO cajeros.cajas(codigo,usuario,sucursal) VALUES(1,c_usuario,c_sucursal);
+	ELSE
+		INSERT INTO cajeros.cajas(codigo,usuario,sucursal) VALUES(c_caja+1,c_usuario,c_sucursal);
+
+	END IF;
+END;
+$$;
+
+-- funcion para llamar los usuarios que no tienen cajas asignadas
+CREATE OR REPLACE FUNCTION usuarios.traerUsuariosNoAsignadosACaja(idS INTEGER)
+RETURNS TABLE(identificacion integer, nombre VARCHAR, rol INTEGER,sucursalcaja INTEGER, sucursal INTEGER)
+AS $$
+BEGIN
+	RETURN QUERY
+		--select para ver que usuario de un sucursal no tiene caja asignada
+		SELECT u.identificacion, u.nombre, u.rol, c.sucursal AS sucursalcaja, u.sucursal AS sucursal
+			FROM usuarios.usuarios u
+		LEFT JOIN cajeros.cajas c ON u.identificacion = c.usuario
+		WHERE u.rol = 4 AND c.sucursal IS NULL and u.sucursal=idS;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- funcion para verificar si un usuario tiene asignada una caja o no
+CREATE OR REPLACE FUNCTION cajeros.traerCajaDeUsuarioCajero(idU INTEGER)
+RETURNS TABLE(codigocaja INTEGER)
+AS $$
+BEGIN
+	RETURN QUERY
+		select codigo from cajeros.cajas where usuario=idU;
+
+END;
+$$ LANGUAGE plpgsql;
+
+-- procedimiento para crear un cliente
+
+CREATE OR REPLACE PROCEDURE clientes.insertCliente(
+    c_nombre VARCHAR,
+    c_telefono BIGINT,
+    C_NIT VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO clientes.clientes (nombre, telefono, nit)
+	VALUES (c_nombre,c_telefono,c_NIT);
+END;
+$$;
+
+
+-- proceso para agregar una solicitud de modificacion al cliente
+
+CREATE OR REPLACE PROCEDURE clientes.InsertsolicitudModificacionCliente(
+    s_usuario INTEGER,
+	s_sucursal INTEGER,
+	s_cliente INTEGER,
+	s_descripcion VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO clientes.solicitudes_modificacion_cliente (usuario, sucursal, cliente,descripcion,aprobacion)
+	VALUES (s_usuario,s_sucursal,s_cliente,s_descripcion,false);
+END;
+$$;
+
+
+-- funcion para traer solitudes para modificar clientes segun el usuario
+CREATE OR REPLACE FUNCTION clientes.traerSolicitudesModClienteUsuario(idU INTEGER)
+RETURNS TABLE(id INTEGER,usuario INTEGER, n_usuario VARCHAR, sucursal INTEGER, n_sucursal VARCHAR,
+			cliente INTEGER, n_cliente VARCHAR, descripcion VARCHAR, aprobacion BOOLEAN,edit BOOLEAN)
+AS $$
+BEGIN
+	RETURN QUERY
+		select s.id, s.usuario, u.nombre as n_usuario, s.sucursal, sc.nombre as n_sucursal, s.cliente, c.nombre as n_cliente,
+			s.descripcion, s.aprobacion,s.edit
+		from clientes.solicitudes_modificacion_cliente s
+		join usuarios.usuarios u on(s.usuario=u.identificacion)
+		join sucursales.sucursal sc on(s.sucursal=sc.identificacion)
+		join clientes.clientes c on(s.cliente=c.identificacion) where s.usuario = idU;
+
+END;
+$$ LANGUAGE plpgsql;
+
+-- actualizacion de la aprobacion de una solicitud
+CREATE OR REPLACE FUNCTION clientes.aprobarSolicitudModificacionCliente(
+	idSM INTEGER
+)
+RETURNS VOID
+AS $$
+BEGIN
+    UPDATE clientes.solicitudes_modificacion_cliente
+    SET
+        aprobacion=true
+    WHERE id = idSM;
+END;
+$$ LANGUAGE plpgsql;
+
+
+-- actualizacion de un cliente
+CREATE OR REPLACE FUNCTION clientes.updateClient(
+	c_idCliente INTEGER,
+	c_nombre VARCHAR,
+	c_telefono BIGINT,
+	c_nit VARCHAR
+)
+RETURNS VOID
+AS $$
+BEGIN
+    UPDATE clientes.clientes
+    SET
+        nombre=c_nombre, telefono = c_telefono, nit=c_nit
+    WHERE identificacion = c_idCliente;
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+-- actualizacion que ya edito la solicitud
+CREATE OR REPLACE FUNCTION clientes.confirmarEditarSolicitudesModificaciones(
+	idSM INTEGER
+)
+RETURNS VOID
+AS $$
+BEGIN
+    UPDATE clientes.solicitudes_modificacion_cliente
+    SET
+        edit=false
+    WHERE id = idSM;
+END;
+$$ LANGUAGE plpgsql;

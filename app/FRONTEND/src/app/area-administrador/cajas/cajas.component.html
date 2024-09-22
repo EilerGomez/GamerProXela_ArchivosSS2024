@@ -1,0 +1,72 @@
+
+
+<div class="container mt-2 col-md-10" *ngIf="mostrarNuevaCaja">
+    <div class="row">
+        <div class="col">
+            <div class="card my-4">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nueva caja</h3>
+                </nav>
+                <form (click)="llamarUsuariosCajas(sucursalForm)" #sucursalForm="ngForm">
+                    <div class="form-group">
+                        <label for="rol">Seleccione en que sucursal desea agregar la caja:</label>
+                        <select class="form-select" aria-label="Default select example" id="combo" #comboc="ngModel" [(ngModel)]="idSucursal" name="sucursal" required>
+                            <option [value]=1>Sucursal Parque</option>
+                            <option [value]=2>Sucursal Centro 1</option>
+                            <option [value]=3>Sucursal Centro 2</option>
+                        </select>
+                    </div>
+                </form><br><br>
+                <form (ngSubmit)="guardarCaja()" #usuarioCajaForm="ngForm">
+                    <div class="form-group">
+                        <label for="rol">Seleccione el usuario encargado de la caja:</label>
+                        <select class="form-select" aria-label="Default select example" id="combo" [(ngModel)]="idUser" name="usuario" required>
+                            <option *ngFor="let u of usuarios;" [value]=u.identificacion>
+                                {{ u.nombre }}
+                            </option>
+                        </select>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-success mt-2 me-4" [disabled]="!usuarioCajaForm.form.valid">
+                            <i class="bi bi-save"></i> Guardar
+                        </button>
+                    </div>
+                </form>
+                
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container mt-5 pt-5" *ngIf="!mostrarNuevaCaja">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h3>Cajas en sucursales</h3>
+            <button class="btn btn-primary" aria-label="Agregar usuario" (click)="mostrarNuevaCaja=true">
+                <i class="bi bi-file-plus-fill"></i> Agregar
+            </button>
+        </div>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Caja</th>
+                    <th>Sucursal</th>
+                    <th>Codigo usuario</th>
+                    <th>Nombre usuario</th>
+                <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of cajas; let i = index">
+                    <td>Caja {{c.codigo}}</td>
+                    <td>{{c.n_sucursal}}</td>
+                    <td>{{c.c_usuario}}</td>
+                    <td>{{c.n_usuario}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning" > <i class="bi bi-pencil"></i>   Editar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -6,7 +6,7 @@ function usuariosRouter(clients) {
     const router = express.Router();
 
     // AGREGAR NUEVO USUARIO
-
+    
     // OBTENER TODOS LOS USUARIOS
     router.get('/usuarios', async (req, res) => {
         const { roldb } = req.query;
@@ -51,7 +51,7 @@ function usuariosRouter(clients) {
             }
             res.status(200).json(result.rows[0]);
         } catch (err) {
-            res.status(500).send('Error al obtener la compra: ' + err.message);
+            res.status(500).send('Error al obtener el usuario: ' + err.message);
         }
     });
 

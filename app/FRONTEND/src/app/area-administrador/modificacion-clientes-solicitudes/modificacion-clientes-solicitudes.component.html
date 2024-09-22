@@ -1,0 +1,56 @@
+
+
+<div class="" >
+    <div class="card">
+        <h3>Totales ({{solicitudes.length}}) </h3>
+        <br>
+        <div class="form-group row">
+            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{solicitudes.length}}</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                        placeholder="Buscar solicitudes..." [(ngModel)]="claveBusquedaSolicitud" 
+                        (input)="searchSolicitudes(claveBusquedaSolicitud)"
+                    >
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Id cliente</th>
+                    <th>Cliente</th>
+                    <th>Id usuario</th>
+                    <th>Usuario</th>
+                    <th>Sucursal</th>
+                    <th>Descripcion</th>
+                    <th>Estado</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of solicitudes; let i = index">
+                    <td>{{s.id}}</td>
+                    <td>{{s.cliente}}</td>
+                    <td>{{s.n_cliente}}</td>
+                    <td>{{s.usuario}}</td>
+                    <td>{{s.n_usuario}}</td>
+                    <td>{{s.n_sucursal}}</td>
+                    <td>{{s.descripcion}}</td>
+                    <td>{{getEstadoSolicitud(s.aprobacion)}}</td>
+                    <td class="">
+                        <button class="btn btn-success " [disabled]="s.aprobacion" (click)="aprobarSolicitudModificacion(s.id)"> <i class="bi bi-check-all"></i>  Aprobar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

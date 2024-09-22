@@ -60,10 +60,10 @@ CREATE TABLE usuarios.usuarios(
 );
 
 CREATE TABLE cajeros.cajas(
-	identificacion SERIAL NOT NULL,
-	usuario INTEGER NOT NULL,
+	codigo INTEGER NOT NULL,
+	usuario INTEGER,
 	sucursal INTEGER NOT NULL,
-	PRIMARY KEY(identificacion,sucursal),
+	PRIMARY KEY(codigo,sucursal),
 	CONSTRAINT cajas_user_fk FOREIGN KEY(usuario)
 	REFERENCES usuarios.usuarios(identificacion)
 	ON DELETE CASCADE
@@ -119,7 +119,8 @@ CREATE TABLE bodegas.productos_compra(
 CREATE TABLE cajeros.clientes(
 	identificacion SERIAL NOT NULL,
 	nombre CHARACTER VARYING (80) NOT NULL,
-	telefono INTEGER NOT NULL,
+	telefono BIGINT NOT NULL,
+	nit CHARACTER VARYING (20),
 	PRIMARY KEY(identificacion)
 );
 
@@ -127,6 +128,7 @@ CREATE TABLE cajeros.ventas(
 	codigo SERIAL NOT NULL,
 	usuario INTEGER NOT NULL,
 	sucursal INTEGER NOT NULL,
+	caja INTEGER NOT NULL,
 	cliente INTEGER NOT NULL,
 	nit_cliente INTEGER NOT NULL,
 	total_sin_descuento DECIMAL,
@@ -208,7 +210,29 @@ CREATE TABLE tarjetas.solicitudes_tarjetas(
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
 );
+CREATE TABLE clientes.solicitudes_modificacion_cliente(
+	id SERIAL NOT NULL,
+	usuario INTEGER NOT NULL,
+	sucursal INTEGER NOT NULL,
+	cliente INTEGER NOT NULL,
+	descripcion CHARACTER VARYING(100),
+	aprobacion BOOLEAN NOT NULL,
+	edit BOOLEAN NOT NULL,
+	PRIMARY KEY(id),
+	CONSTRAINT cliente_solicitud_modificacion_fk FOREIGN KEY(cliente)
+	REFERENCES clientes.clientes(identificacion)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+	CONSTRAINT usuario_solicitud_modificacion_fk FOREIGN KEY (usuario)
+	REFERENCES usuarios.usuarios(identificacion)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE,
+	CONSTRAINT sucursal_solicitud_modificacion_cliente_fk FOREIGN KEY(sucursal)
+	REFERENCES sucursales.sucursal(identificacion)
+	ON DELETE CASCADE
+	ON UPDATE CASCADE
 
+);
 
 
 /*PERMISOS DE USUARIOS*/

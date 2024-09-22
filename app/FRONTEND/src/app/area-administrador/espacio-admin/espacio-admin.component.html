@@ -12,8 +12,15 @@
         </button>
         <div class="collapse navbar-collapse justify-content-between px-lg-3" id="navbarCollapse" style="font-size: 20px;">
             <div class="navbar-nav mx-auto py-0">
-                <a routerLink="listar" class="nav-item nav-link active"  style="color: rgb(0, 63, 252);">Solicitud tarjetas</a>
                 <a routerLink="listarUsuarios" class="nav-item nav-link" style="color: rgb(0, 63, 252);">Usuarios</a>
+                <a routerLink="cajas" class="nav-item nav-link" style="color: rgb(0, 63, 252);">Cajas</a>
+                <div class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" style="color: rgb(0, 63, 252);">Solicitudes</a>
+                    <div class="dropdown-menu m-0">
+                        <a class="dropdown-item" routerLink="modificacionesClienteSolicitudes" style="color: rgb(0, 63, 252);">Modificacion de clientes</a>
+                        <a class="dropdown-item" routerLink="historialCobro" style="color: rgb(0, 63, 252);">Tarjetas de Descuento</a>
+                    </div>
+                </div>
                 <div class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" style="color: rgb(0, 63, 252);">Reportes</a>
                     <div class="dropdown-menu m-0">

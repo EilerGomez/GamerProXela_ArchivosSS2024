@@ -1,0 +1,146 @@
+<div class="container mt-2 col-md-4" *ngIf="!mostrarNuevaSolicitud && mostrarEditarSolicitud">
+    <div class="row">
+        <div class="col">
+            <div class="card my-4">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Editar cliente</h3>
+                </nav>
+                
+
+                <div class="card-body">
+                    <form (ngSubmit)="editarCliente(editClienteForm)" #editClienteForm="ngForm">
+                        <h5>ID: {{clienteEdit.identificacion}}</h5>
+                        <div class="form-group">
+                            <label for="name">Nombre del cliente:</label>
+                            <input type="text" class="form-control" name="name" #nombreN="ngModel" [(ngModel)]="clienteEdit.nombre" required>
+                        </div><br>
+                        
+                        <div class="form-group">
+                            <label for="tel">Teléfono del cliente:</label>
+                            <input type="number" class="form-control" name="tel" #pass1="ngModel" [(ngModel)]="clienteEdit.telefono" required>
+                        </div><br>
+
+                        <div class="form-group">
+                            <label for="nit">Nit del cliente:</label>
+                            <input type="text" class="form-control" name="nit" #pass2="ngModel" [(ngModel)]="clienteEdit.nit">
+                        </div><br>
+
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success mt-2 me-4" [disabled]="!editClienteForm.form.valid">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                            <button class="btn btn-info" type="button" (click)="mostrarEditarSolicitud=false">
+                                <i class="bi bi-x"></i> Cancelar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-2 col-md-4" *ngIf="mostrarNuevaSolicitud && !mostrarEditarSolicitud">
+    <div class="row">
+        <div class="col">
+            <div class="card my-4">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nueva solicitud</h3>
+                </nav>
+                <div class="form-group row">
+                    <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{clientes.length}}</label>
+                    <div class="col-md-8">
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                                placeholder="Buscar clientes..." [(ngModel)]="claveBusqueda" 
+                                (input)="searchClientes(claveBusqueda)"
+                            >
+                            <div class="input-group-append">
+                                <span class="input-group-text">
+                                    <i class="fas fa-search"></i>
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <form (ngSubmit)="guardarNuevaSolicitud(solicitudModificacionClienteForm)" #solicitudModificacionClienteForm="ngForm">
+                        <div class="form-group">
+                            <label for="rol">Seleccione el cliente que desee modificar</label>
+                            <select class="form-select" aria-label="Default select example" id="combo" [(ngModel)]="cliente" name="cliente" required>
+                                <option *ngFor="let c of clientes;" [value]=c.identificacion>
+                                   {{c.identificacion}}: {{ c.nombre }}
+                                </option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="name">Ingrese una descripcion:</label>
+                            <input type="text" class="form-control" name="name" #nombreN="ngModel" [(ngModel)]="descripcion" required>
+                        </div><br>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success mt-2 me-4" [disabled]="!solicitudModificacionClienteForm.form.valid">
+                                <i class="bi bi-save"></i> Guardar
+                            </button>
+                            <button class="btn btn-info" (click)="mostrarNuevaSolicitud=false &&solicitudModificacionClienteForm.resetForm()"> <i class="bi bi-x"></i> Cancelar</button>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 pt-5" *ngIf="!mostrarNuevaSolicitud && !mostrarEditarSolicitud" >
+    <div class="card">
+        <h3>Totales ({{solicitudes.length}}) </h3>
+        <div class="text-end">
+            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="NuevaSolicitud()">
+                <i class="bi bi-person-plus-fill"></i> Agregar
+            </button>
+        </div><br>
+        <div class="form-group row">
+            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{solicitudes.length}}</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                        placeholder="Buscar solicitudes..." [(ngModel)]="claveBusquedaSolicitud" 
+                        (input)="searchSolicitudes(claveBusquedaSolicitud)"
+                    >
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Id cliente</th>
+                    <th>Nombre cliente</th>
+                    <th>Descripcion</th>
+                    <th>Estado</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of solicitudes; let i = index">
+                    <td>{{s.id}}</td>
+                    <td>{{s.cliente}}</td>
+                    <td>{{s.n_cliente}}</td>
+                    <td>{{s.descripcion}}</td>
+                    <td>{{getEstadoSolicitud(s.aprobacion)}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning " [disabled]="!s.edit" (click)="mostrarEditarCliente(s.cliente,s.id)"> <i class="bi bi-pencil"></i>   Editar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

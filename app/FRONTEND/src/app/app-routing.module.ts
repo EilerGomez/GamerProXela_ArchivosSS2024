@@ -12,7 +12,12 @@ import { EspacioInventarioComponent } from './area-inventario/espacio-inventario
 import { TodosProductosComponent } from './area-bodega/todos-productos/todos-productos.component';
 import { TrasladarProductosComponent } from './area-inventario/trasladar-productos/trasladar-productos.component';
 import { ConsultarProductosComponent } from './area-inventario/consultar-productos/consultar-productos.component';
-
+import { EspacioCajeroComponent } from './area-cajero/espacio-cajero/espacio-cajero.component';
+import { AreaCajeroComponent } from './area-cajero/area-cajero.component';
+import { CajasComponent } from './area-administrador/cajas/cajas.component';
+import { ClientesComponent } from './area-cajero/clientes/clientes.component';
+import { SolicitudesModificacionClienteComponent } from './area-cajero/solicitudes-modificacion-cliente/solicitudes-modificacion-cliente.component';
+import { ModificacionClientesSolicitudesComponent } from './area-administrador/modificacion-clientes-solicitudes/modificacion-clientes-solicitudes.component';
 
 const routes: Routes = [
 
@@ -21,7 +26,9 @@ const routes: Routes = [
   {
     path: 'areaAdministrador', component: AreaAdministradorComponent,
     children: [
-      {path:'listarUsuarios',component:ListarUsuariosComponent}
+      {path:'listarUsuarios',component:ListarUsuariosComponent},
+      {path:'cajas',component:CajasComponent},
+      {path:'modificacionesClienteSolicitudes',component:ModificacionClientesSolicitudesComponent}
     ]
   },
   { path: 'login', component: LoginComponent },
@@ -38,6 +45,13 @@ const routes: Routes = [
     children:[
       {path:'trasladarProductos',component:TrasladarProductosComponent},
       {path:'consultarProductos',component:ConsultarProductosComponent}
+    ]
+  },
+  {
+    path:'areaCajero',component:AreaCajeroComponent,
+    children:[
+      {path:'clientes',component:ClientesComponent},
+      {path:'solicitudesModificacionCliente',component:SolicitudesModificacionClienteComponent}
     ]
   }
 ];

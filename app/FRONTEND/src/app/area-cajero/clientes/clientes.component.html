@@ -1,0 +1,82 @@
+
+<div class="container mt-2 col-md-4" *ngIf="mostrarNuevoCliente">
+    <div class="row">
+        <div class="col">
+            <div class="card my-4">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nuevo Cliente</h3>
+                </nav>
+
+                <div class="card-body">
+                    <form (ngSubmit)="crearNuevoCliente(nuevoClienteForm)" #nuevoClienteForm="ngForm">
+                        
+                        <div class="form-group">
+                            <label for="name">Nombre del cliente:</label>
+                            <input type="text" class="form-control" name="name" #nombreN="ngModel" [(ngModel)]="nombreCliente" required>
+                        </div><br>
+                        <div class="form-group">
+                            <label for="pass1">Telefono del cliente:</label>
+                            <input type="number" class="form-control" name="tel" #pass1="ngModel" [(ngModel)]="telefonoCliente" required>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="pass2">Nit del cliente:</label>
+                            <input type="text" class="form-control" name="nit" #pass2="ngModel" [(ngModel)]="nitCliente" >
+                        </div>                        
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success mt-2 me-4"
+                                [disabled]="!nuevoClienteForm.form.valid"> <i class="bi bi-save"></i> Guardar</button>
+                            <button class="btn btn-info" (click)="mostrarNuevoCliente=false"> <i class="bi bi-x"></i> Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container mt-5 pt-5" *ngIf="!mostrarNuevoCliente" >
+    <div class="card">
+        <h3>Totales ({{clientes.length}}) </h3>
+        <div class="text-end">
+            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="NuevoCliente()">
+                <i class="bi bi-person-plus-fill"></i> Agregar
+            </button>
+        </div><br>
+        <div class="form-group row">
+            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{clientes.length}}</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                        placeholder="Buscar clientes..." [(ngModel)]="claveBusqueda" 
+                        (input)="searchProducto(claveBusqueda)"
+                    >
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Identificacion</th>
+                    <th>Nombre</th>
+                    <th>Telefono</th>
+                    <th>Nit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of clientes; let i = index">
+                    <td>{{c.identificacion}}</td>
+                    <td>{{c.nombre}}</td>
+                    <td>{{c.telefono}}</td>
+                    <td>{{c.nit}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -25,6 +25,14 @@ import { EspacioInventarioComponent } from './area-inventario/espacio-inventario
 import { TodosProductosComponent } from './area-bodega/todos-productos/todos-productos.component';
 import { TrasladarProductosComponent } from './area-inventario/trasladar-productos/trasladar-productos.component';
 import { ConsultarProductosComponent } from './area-inventario/consultar-productos/consultar-productos.component';
+import { AreaCajeroComponent } from './area-cajero/area-cajero.component';
+import { EspacioCajeroComponent } from './area-cajero/espacio-cajero/espacio-cajero.component';
+import { CajasComponent } from './area-administrador/cajas/cajas.component';
+import { CajasService } from './Service/cajas.service';
+import { ClientesComponent } from './area-cajero/clientes/clientes.component';
+import { SolicitudesModificacionClienteComponent } from './area-cajero/solicitudes-modificacion-cliente/solicitudes-modificacion-cliente.component';
+import { ClientesService } from './Service/clientes.service';
+import { ModificacionClientesSolicitudesComponent } from './area-administrador/modificacion-clientes-solicitudes/modificacion-clientes-solicitudes.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -42,7 +50,13 @@ import { ConsultarProductosComponent } from './area-inventario/consultar-product
     EspacioInventarioComponent,
     TodosProductosComponent,
     TrasladarProductosComponent,
-    ConsultarProductosComponent
+    ConsultarProductosComponent,
+    AreaCajeroComponent,
+    EspacioCajeroComponent,
+    CajasComponent,
+    ClientesComponent,
+    SolicitudesModificacionClienteComponent,
+    ModificacionClientesSolicitudesComponent
     
   ],
   imports: [
@@ -52,7 +66,7 @@ import { ConsultarProductosComponent } from './area-inventario/consultar-product
     HttpClientModule
   ],
   providers: [ LoginService,SucursalesService,
-  UsuariosService, ComprasService,ProductosService],
+  UsuariosService, ComprasService,ProductosService,CajasService,ClientesService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

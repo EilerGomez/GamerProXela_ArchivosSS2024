@@ -474,3 +474,16 @@ INSERT INTO sucursales.productos_sucursal(id_producto, id_sucursal, cantidad_est
 INSERT INTO sucursales.productos_sucursal(id_producto, id_sucursal, cantidad_estanteria, cantidad_bodega, pasillo_bodega, pasillo_estanteria) VALUES (124, 3, 18, 22, 4, 11);
 INSERT INTO sucursales.productos_sucursal(id_producto, id_sucursal, cantidad_estanteria, cantidad_bodega, pasillo_bodega, pasillo_estanteria) VALUES (125, 3, 21, 30, 5, 12);
 
+
+-- insertando 8 clientes
+INSERT INTO clientes.clientes (nombre, telefono, nit) VALUES
+('Carlos Pérez', 3101234567, '123456789-1'),
+('María Gómez', 3159876543, '987654321-0'),
+('Juan Rodríguez', 3207654321, '456789123-2'),
+('Ana Martínez', 3123456789, '654321987-3'),
+('Pedro Fernández', 3198765432, '789123456-4'),
+('Laura Sánchez', 3112345678, '321654987-5'),
+('Luis Ramírez', 3167654321, '987321654-6'),
+('Sofía Morales', 3186543210, '123789654-7');
+
+
