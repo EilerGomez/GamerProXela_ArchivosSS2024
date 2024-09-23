@@ -192,7 +192,8 @@ CREATE TABLE tarjetas.tarjeta_descuento(
 	total_puntos DECIMAL NOT NULL,
 	xgasto DECIMAL NOT NULL,
 	puntosxgasto INTEGER NOT NULL,
-	PRIMARY KEY(codigo,cliente),
+	fecha_mod DATE NOT NULL,
+	PRIMARY KEY(cliente),
 	CONSTRAINT cliente_tarjeta_descuento_fk FOREIGN KEY (cliente)
 	REFERENCES clientes.clientes(identificacion)
 	ON DELETE CASCADE

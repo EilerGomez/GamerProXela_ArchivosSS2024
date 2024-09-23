@@ -587,8 +587,9 @@ CREATE OR REPLACE FUNCTION cajeros.cobrarDineroSinDescuento(
 RETURNS VOID
 AS $$
 	DECLARE cantidadDinero DECIMAL;
+	DECLARE idcliente INTEGER;
 BEGIN
-	select total_sin_descuento INTO cantidadDinero FROM cajeros.ventas
+	select total_sin_descuento,cliente INTO cantidadDinero,idcliente FROM cajeros.ventas
 		WHERE codigo=idventa;
 
     UPDATE cajeros.ventas
@@ -597,5 +598,88 @@ BEGIN
     WHERE codigo = idventa;
 	UPDATE sucursales.sucursal SET dinero_caja=dinero_caja+cantidadDinero
 	WHERE identificacion = idsucursal;
+	call tarjetas.insertarPuntosTarjetaDescuento(idcliente,cantidadDinero);
+
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+--- proceso para agregar puntos a las tarjetas de descuento
+CREATE OR REPLACE PROCEDURE tarjetas.insertarPuntosTarjetaDescuento(
+    idcliente INTEGER,
+    total_venta NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+    DECLARE
+        idtarjeta INTEGER;
+        xgastot NUMERIC;
+        puntosxgastot NUMERIC;
+    BEGIN
+        SELECT codigo, xgasto, puntosxgasto INTO idtarjeta, xgastot, puntosxgastot
+        FROM tarjetas.tarjeta_descuento
+        WHERE cliente = idcliente;
+
+        IF idtarjeta IS NOT NULL THEN
+            UPDATE tarjetas.tarjeta_descuento
+            SET total_puntos = total_puntos + ((total_venta / xgastot) * puntosxgastot)
+            WHERE codigo = idtarjeta;
+        END IF;
+    END;
+$$;
+
+
+
+-- funcion para traerTarjetasDeDescuento
+CREATE OR REPLACE FUNCTION tarjetas.getTarjetas(
+)
+RETURNS TABLE(codigo INT,tipo CHAR, cliente INTEGER, n_cliente VARCHAR, total_puntos NUMERIC,
+	xgasto NUMERIC, puntosxgasto INT,fecha_mod DATE)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+
+    RETURN QUERY
+    	SELECT t.codigo, t.tipo, t.cliente, c.nombre as n_cliente, t.total_puntos,
+			t.xgasto, t.puntosxgasto, t.fecha_mod
+		FROM tarjetas.tarjeta_descuento t
+		JOIN clientes.clientes c ON (t.cliente=c.identificacion);
+END;
+$$;
+
+
+--- proceso para agregar tarjetas de descuento
+CREATE OR REPLACE PROCEDURE tarjetas.insertTarjetas(
+    idcliente INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+    BEGIN
+        INSERT INTO tarjetas.tarjeta_descuento (tipo,cliente,total_puntos,xgasto,puntosxgasto,fecha_mod)
+		VALUES ('C',idcliente,0,200,5,CURRENT_DATE);
+    END;
+$$;
+
+
+--agregando trigger para saber si un cliente ya tiene tarjeta de descuento
+
+CREATE OR REPLACE FUNCTION tarjetas.verificarTarjetaUsuario()
+RETURNS TRIGGER AS $$
+DECLARE idtarjeta INTEGER;
+BEGIN
+	select codigo into idtarjeta from tarjetas.tarjeta_descuento where cliente = NEW.cliente;
+
+
+  IF idtarjeta IS NOT NULL THEN
+    RAISE EXCEPTION 'El cliente ya tiene tarjeta de descuento ';
+  END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_verificar_si_tieneTarjeta_Cliente
+BEFORE INSERT ON tarjetas.tarjeta_descuento
+FOR EACH ROW
+EXECUTE FUNCTION tarjetas.verificarTarjetaUsuario();

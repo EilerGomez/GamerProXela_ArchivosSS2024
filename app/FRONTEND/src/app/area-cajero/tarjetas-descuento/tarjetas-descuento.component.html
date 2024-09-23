@@ -1,0 +1,82 @@
+<div class="container mt-2 col-md-10" *ngIf="mostrarAgregarTarjeta">
+    <div class="row">
+        <div class="col">
+            <div class="card my-10">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nueva Tarjeta de descuento</h3>
+                </nav>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-danger"
+                        (click)="dejarDeMostrarNuevaTarjeta(nuevaTarjetaForm)"><i class="bi bi-add"></i> Cancelar</button>
+                </div> 
+                <br>
+                
+                <div class="card-body">
+                    <form (ngSubmit)="agregarTarjeta(nuevaTarjetaForm)"  #nuevaTarjetaForm="ngForm">
+                        
+                        <div class="form-group">
+                            <label for="rol">Seleccione el cliente:</label>
+                            <select class="form-select" aria-label="Default select example" id="combo"  name="comboClientes" required [(ngModel)]="idCliente">
+                                <option *ngFor="let c of clientes; let i = index" [value]=c.identificacion>{{c.identificacion}}: {{c.nombre}}</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success  btn-lg"
+                                [disabled]="!nuevaTarjetaForm.form.valid"> <i class="bi bi-save"></i> Guardar tarjeta</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<div class="container" *ngIf="!mostrarAgregarTarjeta">
+    <div class="card">
+        <h3>Totales ({{tarjetas.length}}) </h3>
+        <div class="text-end">
+            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="mostrarAgregarTarjeta=true">
+                <i class="bi bi-file-earmark-plus-fill"></i> Agregar
+            </button>
+        </div><br>
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                    placeholder="Buscar tarjetas..." [(ngModel)]="claveBusqueda" 
+                    (input)="searchTarjeta(claveBusqueda)"
+                >
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Tipo</th>
+                    <th>Id cliente</th>
+                    <th>Cliente</th>
+                    <th>Puntos</th>
+                    <th>Modificacion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let t of tarjetas; let i = index">
+                    <td>{{t.codigo}}</td>
+                    <td>{{getTipo(t.tipo)}}</td>
+                    <td>{{t.cliente}}</td>
+                    <td>{{t.n_cliente}}</td>
+                    <td>{{getPuntos(t.total_puntos)}}</td>
+                    <td>{{t.fecha_mod}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

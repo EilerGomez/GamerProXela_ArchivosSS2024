@@ -21,6 +21,7 @@ import { ModificacionClientesSolicitudesComponent } from './area-administrador/m
 import { ProductosCajerosComponent } from './area-cajero/productos-cajeros/productos-cajeros.component';
 import { VentasComponent } from './area-cajero/ventas/ventas.component';
 import { InfoSucursalComponent } from './area-cajero/info-sucursal/info-sucursal.component';
+import { TarjetasDescuentoComponent } from './area-cajero/tarjetas-descuento/tarjetas-descuento.component';
 
 const routes: Routes = [
 
@@ -57,7 +58,8 @@ const routes: Routes = [
       {path:'solicitudesModificacionCliente',component:SolicitudesModificacionClienteComponent},
       {path:'productosCajero',component:ProductosCajerosComponent},
       {path:'ventas',component:VentasComponent},
-      {path:'infoSucursal',component:InfoSucursalComponent}
+      {path:'infoSucursal',component:InfoSucursalComponent},
+      {path:'todasTarjetas',component:TarjetasDescuentoComponent}
     ]
   }
 ];
