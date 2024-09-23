@@ -18,6 +18,9 @@ import { CajasComponent } from './area-administrador/cajas/cajas.component';
 import { ClientesComponent } from './area-cajero/clientes/clientes.component';
 import { SolicitudesModificacionClienteComponent } from './area-cajero/solicitudes-modificacion-cliente/solicitudes-modificacion-cliente.component';
 import { ModificacionClientesSolicitudesComponent } from './area-administrador/modificacion-clientes-solicitudes/modificacion-clientes-solicitudes.component';
+import { ProductosCajerosComponent } from './area-cajero/productos-cajeros/productos-cajeros.component';
+import { VentasComponent } from './area-cajero/ventas/ventas.component';
+import { InfoSucursalComponent } from './area-cajero/info-sucursal/info-sucursal.component';
 
 const routes: Routes = [
 
@@ -51,7 +54,10 @@ const routes: Routes = [
     path:'areaCajero',component:AreaCajeroComponent,
     children:[
       {path:'clientes',component:ClientesComponent},
-      {path:'solicitudesModificacionCliente',component:SolicitudesModificacionClienteComponent}
+      {path:'solicitudesModificacionCliente',component:SolicitudesModificacionClienteComponent},
+      {path:'productosCajero',component:ProductosCajerosComponent},
+      {path:'ventas',component:VentasComponent},
+      {path:'infoSucursal',component:InfoSucursalComponent}
     ]
   }
 ];

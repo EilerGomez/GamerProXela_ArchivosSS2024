@@ -1,0 +1,236 @@
+<div class="container mt-2 col-md-10" *ngIf="mostrarDetalles">
+    <div class="row">
+        <div class="col">
+            <div class="card my-10">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Detalles en esta venta</h3>
+                </nav>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-primary"
+                        (click)="mostrarDetalles=false"><i class="bi bi-add"></i> Aceptar</button>
+                </div> 
+                <div class="card-body">
+                    
+                </div>
+                <h3>Productos en la venta {{ventaDetalle.codigo}}</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>#Venta</th>
+                            <th>Codigo producto</th>
+                            <th>Nombre producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let pc of productosNuevaVenta; let i = index">
+                            <td>{{pc.id_venta}}</td>
+                            <td>{{pc.id_producto}}</td>
+                            <td>{{pc.producto}}</td>
+                            <td>{{pc.cantidad}}</td>
+                            <td>{{pc.precio_unitario}}</td>
+                            <td>{{pc.subtotal}}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <h3>Precio total {{ventaDetalle.total_sin_descuento}}</h3>
+                <h3>Precio total con descuento {{ventaDetalle.total_con_descuento}}</h3>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-2 col-md-10" *ngIf="mostrarNuevaVenta">
+    <div class="row">
+        <div class="col">
+            <div class="card my-10">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nueva Venta</h3>
+                </nav>
+                <div class="text-end">
+                    <button type="submit" class="btn btn-warning"
+                        (click)="dejarDeMostrarNuevaVenta()"><i class="bi bi-add"></i> Aceptar</button>
+                </div> 
+                <br>
+                
+                <div class="card-body">
+                    <form (ngSubmit)="agregarProductoAVenta(nuevaVentaForm)"  #nuevaVentaForm="ngForm">
+                        <div class="form-group row">
+                            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{productos.length}}</label>
+                            <div class="col-md-8">
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                                        placeholder="Buscar productos..." [(ngModel)]="claveBusqueda" 
+                                        (input)="searchProducto(claveBusqueda)"
+                                    >
+                                    <div class="input-group-append">
+                                        <span class="input-group-text">
+                                            <i class="fas fa-search"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="rol">Seleccione el producto:</label>
+                            <select class="form-select" aria-label="Default select example" id="combo"  name="comoboProductos" required [(ngModel)]="idProductoSeleccionado" (click)="mostrarInfoProducto()">
+                                <option *ngFor="let pr of productos; let i = index" [value]="pr.codigo">C.{{pr.codigo}}:  {{pr.nombre}}</option>
+                            </select>
+                        </div>
+                        <br>
+                        <h4>Cantidad en estanteria: {{productoSeleccionado.cantidad_estanteria}}</h4><br>
+                        <h4>Precio del producto: Q.{{productoSeleccionado.precio_unitario_venta}}</h4>
+                        <div class="form-group">
+                            <label for="cantidad">Ingrese la cantidad del producto:</label>
+                            <input type="number" class="form-control" name="cantidad" [(ngModel)]="cantidadProducto"  required>
+                        </div>                        
+                        <br>
+                        <div>
+                            <button type="submit" class="btn btn-success"
+                                [disabled]="!nuevaVentaForm.form.valid"><i class="bi bi-add"></i> Agregar</button>
+                        </div> 
+                    </form>
+                </div>
+                <h3>Productos en la venta {{codigoNuevaVenta}}</h3>
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th># Venta</th>
+                            <th>Codigo producto</th>
+                            <th>Nombre producto</th>
+                            <th>Cantidad</th>
+                            <th>Precio unitario</th>
+                            <th>Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let pc of productosNuevaVenta; let i = index">
+                            <td>{{pc.id_venta}}</td>
+                            <td>{{pc.id_producto}}</td>
+                            <td>{{pc.producto}}</td>
+                            <td>{{pc.cantidad}}</td>
+                            <td>{{pc.precio_unitario}}</td>
+                            <td>{{pc.subtotal}}</td>
+                        </tr>
+                        
+                    </tbody>
+                </table>
+                <h3>Precio total {{totalNuevaVenta}}</h3>
+                <div class="text-center">
+                    <button type="submit" class="btn btn-primary btn-lg"
+                        [disabled]="totalNuevaVenta <= 0" (click)="hacerPago()">
+                        <i class="bi bi-cash"></i> Realizar cobro
+                    </button>
+                </div>
+                
+                <div class="form-group mt-3" *ngIf="mostrarPago">
+                    <input type="checkbox" id="activo" [(ngModel)]="aplicarChekDescuento" name="activo">
+                    <label for="activo">Aplicar descuento</label>
+                    <br><br><br><br>
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary btn-lg"
+                             (click)="pagarVenta()">
+                             <i class="bi bi-check-all"></i> Hacer pago
+                        </button>
+                    </div> 
+                </div>
+                        
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container mt-5 pt-5" *ngIf="mostrarSeleccionarCliente" >
+    <div class="card">
+        <h3>Seleccione un cliente para realizar la venta </h3><br>
+        <div class="form-group row">
+            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{clientes.length}}</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                        placeholder="Buscar clientes..." [(ngModel)]="claveBusqueda" 
+                        (input)="searchCliente(claveBusqueda)"
+                    >
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Identificacion</th>
+                    <th>Nombre</th>
+                    <th>Telefono</th>
+                    <th>Nit</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of clientes; let i = index">
+                    <td>{{c.identificacion}}</td>
+                    <td>{{c.nombre}}</td>
+                    <td>{{c.telefono}}</td>
+                    <td>{{c.nit}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-success " (click)="seleccionarCliente(c.identificacion)"> <i class="bi bi-check2"></i>     Seleccionar</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+
+
+
+<div class="container" *ngIf="!mostrarNuevaVenta && !mostrarDetalles && !mostrarSeleccionarCliente" >
+    <div class="card">
+        <h3>Totales ({{ventas.length}}) </h3>
+        <div class="text-end">
+            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="mostrarSeleccionarCliente=true">
+                <i class="bi bi-cart-plus-fill bi-xxl"></i> Agregar
+            </button>
+        </div><br>
+        
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo</th>
+                    <th>Cliente</th>
+                    <th>Sucursal</th>
+                    <th>Caja</th>
+                    <th>Fecha</th>
+                    <th>Total</th>
+                    <th>T/C descuento</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let v of ventas; let i = index">
+                    <td>{{v.codigo}}</td>
+                    <td>{{v.n_cliente}}</td>
+                    <td>{{v.n_sucursal}}</td>
+                    <td>Caja {{v.caja}}</td>
+                    <td>{{v.fecha}}</td>
+                    <td>{{v.total_sin_descuento}}</td>
+                    <td>{{v.total_con_descuento}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-warning " (click)="verDetalles(v)"> <i class="bi bi-eye"></i>      Detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

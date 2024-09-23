@@ -497,3 +497,105 @@ BEGIN
     WHERE id = idSM;
 END;
 $$ LANGUAGE plpgsql;
+
+
+-- funcion para traer ventas segun una sucursal
+CREATE OR REPLACE FUNCTION cajeros.getVentas(idS INTEGER)
+RETURNS TABLE(codigo INTEGER,usuario INTEGER, n_usuario VARCHAR, sucursal INTEGER, n_sucursal VARCHAR,
+			cliente INTEGER, n_cliente VARCHAR, nit_cliente VARCHAR, total_sin_descuento NUMERIC,
+			total_con_descuento NUMERIC, fecha DATE, caja INTEGER, puntos_descuento DECIMAL)
+AS $$
+BEGIN
+	RETURN QUERY
+		select v.codigo, v.usuario, u.nombre as n_usuario, v.sucursal, s.nombre as n_sucursal,
+			v.cliente, c.nombre as n_cliente, v.nit_cliente, v.total_sin_descuento, v.total_con_descuento,
+			v.fecha, v.caja, v.puntos_descuento from cajeros.ventas v
+		JOIN usuarios.usuarios u on(v.usuario=u.identificacion)
+		JOIN sucursales.sucursal s on(v.sucursal=s.identificacion)
+		JOIN clientes.clientes c ON(v.cliente = c.identificacion) where v.sucursal=idS;
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+--agregando trigger para saber si hay esa cantidad de productos en estanteria para vender
+
+CREATE OR REPLACE FUNCTION cajeros.comprobarCantidadProductoVenta()
+RETURNS TRIGGER AS $$
+DECLARE cantidad INTEGER;
+DECLARE idsucursal INTEGER;
+BEGIN
+	select sucursal into idsucursal from cajeros.ventas where codigo = NEW.id_venta;
+
+	SELECT  cantidad_estanteria INTO cantidad FROM sucursales.productos_sucursal
+	WHERE id_producto=NEW.id_producto and id_sucursal=idsucursal;
+  IF NEW.cantidad>cantidad THEN
+    RAISE EXCEPTION 'No hay suficiente producto para realizar esta venta solo hay %',cantidad;
+  END IF;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+--- proceso para insertar productos en la factura de la venta
+
+CREATE OR REPLACE PROCEDURE cajeros.insertarProductoVenta(
+    pv_idventa INTEGER,
+    pv_idproducto INTEGER,
+    pv_cantidad INTEGER,
+    pv_precioUnitario NUMERIC
+)
+LANGUAGE plpgsql
+AS $$
+BEGIN
+    INSERT INTO cajeros.productos_venta (id_venta, id_producto, cantidad,precio_unitario,subtotal)
+    VALUES (pv_idventa, pv_idproducto, pv_cantidad, pv_precioUnitario,pv_cantidad*pv_precioUnitario);
+END;
+$$;
+
+
+-- trigger para descontar los productos despues de la venta
+
+CREATE OR REPLACE FUNCTION cajeros.actualizarProductosVentas()
+RETURNS TRIGGER AS $$
+DECLARE idsucursal INTEGER;
+BEGIN
+	select sucursal into idsucursal from cajeros.ventas where codigo = NEW.id_venta;
+
+
+  UPDATE sucursales.productos_sucursal SET cantidad_estanteria=cantidad_estanteria-NEW.cantidad
+  WHERE id_sucursal=idsucursal and id_producto = NEW.id_producto;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+
+CREATE TRIGGER trigger_actualizar_productos_estanteria_venta
+AFTER INSERT ON cajeros.productos_venta
+FOR EACH ROW
+EXECUTE FUNCTION cajeros.actualizarProductosVentas();
+
+
+--FUNCION PARA AGREGAR EL DINERO COBRADO A LA SUCURSAL
+CREATE OR REPLACE FUNCTION cajeros.cobrarDineroSinDescuento(
+	idsucursal INTEGER,
+	idventa INTEGER
+)
+RETURNS VOID
+AS $$
+	DECLARE cantidadDinero DECIMAL;
+BEGIN
+	select total_sin_descuento INTO cantidadDinero FROM cajeros.ventas
+		WHERE codigo=idventa;
+
+    UPDATE cajeros.ventas
+    SET
+        total_con_descuento=total_sin_descuento
+    WHERE codigo = idventa;
+	UPDATE sucursales.sucursal SET dinero_caja=dinero_caja+cantidadDinero
+	WHERE identificacion = idsucursal;
+END;
+$$ LANGUAGE plpgsql;

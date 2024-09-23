@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Producto } from '../Modelo/Producto';
 import { ProdcutosCompra } from '../Modelo/ProductosCompra';
 import { ProductosSucursales } from '../Modelo/ProductosSucursales';
+import { ProdcutosVenta } from '../Modelo/ProductosVenta';
 
 @Injectable({
   providedIn: 'root'
@@ -19,9 +20,15 @@ export class ProductosService {
   nuevoProductoCompra(pc:ProdcutosCompra, rol:number){
     return this.http.post(`${this.Url}compra/?roldb=${rol}`,pc);
   }
+  nuevoProductoVenta(pv:ProdcutosVenta, rol:number){
+    return this.http.post(`${this.Url}venta/?roldb=${rol}`,pv);
+  }
 
   getProductosNuevaCompra(idC:number, rol:number){
     return this.http.get<ProdcutosCompra[]>(`${this.Url}compra/${idC}?roldb=${rol}`);
+  }
+  getProductosNuevaVenta(idV:number, rol:number){
+    return this.http.get<ProdcutosVenta[]>(`${this.Url}venta/${idV}?roldb=${rol}`);
   }
 
   getProductosNoInlcuidos(idS:number, rol:number){

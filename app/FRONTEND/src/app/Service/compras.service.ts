@@ -9,8 +9,8 @@ export class ComprasService {
 
   constructor(private http: HttpClient) { }
   Url='http://localhost:3010/api/compras';
-  getCompras(rol:number){
-    return this.http.get<Compra[]>(`${this.Url}?roldb=${rol}`);
+  getCompras(rol:number, idS:number){
+    return this.http.get<Compra[]>(`${this.Url}/${idS}?roldb=${rol}`);
   }
 
   nuevaCompra(compra:Compra, rol:number){

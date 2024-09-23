@@ -33,6 +33,10 @@ import { ClientesComponent } from './area-cajero/clientes/clientes.component';
 import { SolicitudesModificacionClienteComponent } from './area-cajero/solicitudes-modificacion-cliente/solicitudes-modificacion-cliente.component';
 import { ClientesService } from './Service/clientes.service';
 import { ModificacionClientesSolicitudesComponent } from './area-administrador/modificacion-clientes-solicitudes/modificacion-clientes-solicitudes.component';
+import { ProductosCajerosComponent } from './area-cajero/productos-cajeros/productos-cajeros.component';
+import { VentasComponent } from './area-cajero/ventas/ventas.component';
+import { VentasService } from './Service/ventas.service';
+import { InfoSucursalComponent } from './area-cajero/info-sucursal/info-sucursal.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -56,7 +60,10 @@ import { ModificacionClientesSolicitudesComponent } from './area-administrador/m
     CajasComponent,
     ClientesComponent,
     SolicitudesModificacionClienteComponent,
-    ModificacionClientesSolicitudesComponent
+    ModificacionClientesSolicitudesComponent,
+    ProductosCajerosComponent,
+    VentasComponent,
+    InfoSucursalComponent
     
   ],
   imports: [
@@ -66,7 +73,8 @@ import { ModificacionClientesSolicitudesComponent } from './area-administrador/m
     HttpClientModule
   ],
   providers: [ LoginService,SucursalesService,
-  UsuariosService, ComprasService,ProductosService,CajasService,ClientesService],
+  UsuariosService, ComprasService,ProductosService,CajasService,ClientesService,
+  VentasService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

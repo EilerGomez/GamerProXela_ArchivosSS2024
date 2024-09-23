@@ -130,10 +130,11 @@ CREATE TABLE cajeros.ventas(
 	sucursal INTEGER NOT NULL,
 	caja INTEGER NOT NULL,
 	cliente INTEGER NOT NULL,
-	nit_cliente INTEGER NOT NULL,
+	nit_cliente VARCHAR,
 	total_sin_descuento DECIMAL,
 	total_con_descuento DECIMAL,
 	fecha DATE NOT NULL,
+	puntos_descuento DECIMAL,
 	PRIMARY KEY(codigo),
 	CONSTRAINT usuario_venta_fk FOREIGN KEY (usuario)
 	REFERENCES usuarios.usuarios(identificacion)

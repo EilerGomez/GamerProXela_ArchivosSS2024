@@ -30,11 +30,16 @@ function comprasRouter(clients) {
     });
 
     // OBTENER TODAS LAS COMPRAS
-    router.get('/compras', async (req, res) => {
+    router.get('/compras/:idS', async (req, res) => {
+        const { idS } = req.params;
+
         const { roldb } = req.query;
 
         if (!roldb) {
             return res.status(400).send('El campo rol es obligatorio');
+        }
+        if (!idS) {
+            return res.status(400).send('El campo idS es obligatorio');
         }
 
         const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
@@ -44,7 +49,7 @@ function comprasRouter(clients) {
         }
 
         try {
-            const result = await client.query('select c.codigo, s.nombre AS sucursal, c.fecha, c.total_compra from bodegas.compra c join sucursales.sucursal s on(c.sucursal=s.identificacion) order by c.codigo desc;');
+            const result = await client.query('select c.codigo, s.nombre AS sucursal, c.fecha, c.total_compra from bodegas.compra c join sucursales.sucursal s on(c.sucursal=s.identificacion) where c.sucursal=$1 order by c.codigo desc;',[idS]);
             res.status(200).json(result.rows);
         } catch (err) {
             res.status(500).send('Error al obtener las compras: ' + err.message);

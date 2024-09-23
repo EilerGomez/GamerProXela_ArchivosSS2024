@@ -32,7 +32,7 @@ export class ComprasComponent {
   mostrarDetalles:boolean=false;
 
   ngOnInit():void{
-    this.servicioCompras.getCompras(this.getRolDB()).subscribe(data=>{
+    this.servicioCompras.getCompras(this.getRolDB(),this.getSucursal()).subscribe(data=>{
       this.compras=data;
       this.traerProductos();
     }, error=>{

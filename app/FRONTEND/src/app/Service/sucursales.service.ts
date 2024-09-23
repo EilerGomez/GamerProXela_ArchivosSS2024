@@ -13,4 +13,8 @@ export class SucursalesService {
   getSucursales(rol:number){
     return this.http.get<Sucursal[]>(`${this.Url}?rol=${rol}`);
   }
+
+  getSucursal(rol:number, idS:number){
+    return this.http.get<Sucursal>(`${this.Url}/${idS}?roldb=${rol}`);
+  }
 }
