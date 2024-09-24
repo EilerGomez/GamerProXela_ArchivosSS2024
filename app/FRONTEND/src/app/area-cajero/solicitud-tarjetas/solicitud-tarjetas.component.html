@@ -1,0 +1,109 @@
+
+<div class="container mt-2 col-md-10" *ngIf="mostrarAgregarNuevaSolicitud">
+    <div class="row">
+        <div class="col">
+            <div class="card my-10">
+                <nav class="navbar navbar-expand-lg bg-white navbar-light py-3 py-lg-0 px-lg-5">
+                    <h3 class="mt-2 me-4">Nueva solicitud de cambio de tarjeta</h3>
+                </nav>
+               
+                <div class="text-end">
+                    <button type="submit" class="btn btn-danger"
+                        (click)="dejarDeMostrarNuevaSolicitud(nuevaSolicitudForm)"><i class="bi bi-add"></i> Cancelar</button>
+                </div> 
+                <br>
+                <div class="col-md-8">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                            placeholder="Buscar tarjetas..." [(ngModel)]="claveBusqueda" 
+                            (input)="searchTarjeta(claveBusqueda)"
+                        >
+                        <div class="input-group-append">
+                            <span class="input-group-text">
+                                <i class="fas fa-search"></i>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="card-body">
+                    <form (ngSubmit)="agregarSolicitud(nuevaSolicitudForm)"  #nuevaSolicitudForm="ngForm">
+                        
+                        <div class="form-group">
+                            <label for="rol">Seleccione la tarjeta:</label>
+                            <select class="form-select" aria-label="Default select example" id="combo"  name="combotarjetas" required [(ngModel)]="idCliente">
+                                <option *ngFor="let t of tarjetas; let i = index" [value]=t.cliente>No.{{t.codigo}}, cliente: {{t.n_cliente}}, tipo: {{getTipo(t.tipo)}}</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="rol">Seleccione el motivo de cambio:</label>
+                            <select class="form-select" aria-label="Default select example" id="combo"  name="combotarjetas" required [(ngModel)]="motivoCambio">
+                                <option  value="CO">Comun a oro</option>
+                                <option  value="OP">Oro a Platino</option>
+                                <option  value="PD">Platino a Diamante</option>
+                            </select>
+                        </div>
+                        <br>
+                        <div class="form-group">
+                            <label for="pass2">Descripcion:</label>
+                            <input type="text" class="form-control" name="descripcion" #pass2="ngModel" [(ngModel)]="descripcion" >
+                        </div> 
+                        <br>
+                        <div class="text-center">
+                            <button type="submit" class="btn btn-success  btn-lg"
+                                [disabled]="!nuevaSolicitudForm.form.valid"> <i class="bi bi-save"></i> Guardar solicitud</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="container" *ngIf="!mostrarAgregarNuevaSolicitud">
+    <div class="card">
+        <h3>Totales las solicitudes de cambio ({{solicitudes.length}}) </h3>
+        <div class="text-end">
+            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="mostrarNuevaSolicitud()">
+                <i class="bi bi-file-earmark-plus-fill"></i> Agregar
+            </button>
+        </div><br>
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                    placeholder="Buscar solicitudes..." [(ngModel)]="claveBusqueda" 
+                    (input)="searchSolicitud(claveBusqueda)"
+                >
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#Solicitud</th>
+                    <th>Id cliente</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Motivo</th>
+                    <th>Descripcion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of solicitudes; let i = index">
+                    <td>{{s.codigo}}</td>
+                    <td>{{s.cliente}}</td>
+                    <td>{{s.n_cliente}}</td>
+                    <td>{{s.estado}}</td>
+                    <td>{{s.motivo}}</td>
+                    <td>{{s.descripcion}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

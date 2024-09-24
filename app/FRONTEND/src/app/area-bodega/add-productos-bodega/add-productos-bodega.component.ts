@@ -16,6 +16,7 @@ export class AddProductosBodegaComponent {
   mostrarNuevoIncluido:boolean=false
   mostrarNuevo:boolean=false
   productos!:Producto[]
+  productosT!:Producto[]
 
   pasillobodega!:number
   idProductoIncluido!:number
@@ -23,9 +24,12 @@ export class AddProductosBodegaComponent {
   nombreNuevoProducto!:string
   precioventaNuevoProducto!:number
 
+  claveBusqueda!:string
+
   ngOnInit():void{
     this.servicioProductos.getProductosNoInlcuidos(this.getSucursal(),this.getRolDB()).subscribe(data=>{
       this.productos=data;
+      this.productosT=data;
     })
   }
 
@@ -76,5 +80,19 @@ export class AddProductosBodegaComponent {
     this.mostrarNuevoIncluido=true;
     this.idProductoIncluido=p.codigo;
   }
+  searchProducto(clave: string) {
+    this.productos = clave === "" ? this.productosT : this.buscarProductos(clave, this.productosT);
+  }
+  
 
+  buscarProductos(clave: string, productos: Producto[]): Producto[] {
+    const claveNormalizada = clave.toLowerCase();
+    
+    return productos.filter(producto => {
+      return (
+        producto.nombre.toLowerCase().includes(claveNormalizada) || 
+        producto.codigo.toString().includes(clave)
+      );
+    });
+  }
 }

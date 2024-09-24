@@ -22,6 +22,7 @@ export class VentasComponent {
   ngOnInit():void{
     this.servicioVentas.getVentas(this.getRolDB(),this.getSucursal()).subscribe(data=>{
       this.ventas=data;
+      this.ventasT=data;
       this.traerProductos();
       this.getClientes();
     },error=>{
@@ -48,6 +49,7 @@ export class VentasComponent {
   clientesT!:Cliente[]
 
   ventas!:Venta[]
+  ventasT!:Venta[]
   precioVentaProducto!:number
   idProductoSeleccionado!:number
   productoSeleccionado:Producto = new Producto(1,"",0,"",12,1,);
@@ -76,6 +78,7 @@ export class VentasComponent {
 
   nuevaVenta(){
     //generar la nueva venta
+    this.claveBusqueda=""
     this.productosNuevaVenta=[]
     this.totalNuevaVenta=0;
     this.mostrarNuevaVenta=true;
@@ -91,6 +94,7 @@ export class VentasComponent {
     
   }
   dejarDeMostrarNuevaVenta(){
+    this.claveBusqueda=""
     if(this.totalNuevaVenta==0){
       this.mostrarNuevaVenta=false;
       this.servicioVentas.deleteVenta(this.getRolDB(),this.codigoNuevaVenta).subscribe(data=>{
@@ -116,10 +120,15 @@ export class VentasComponent {
     let pv = new ProdcutosVenta(this.codigoNuevaVenta,this.productoSeleccionado.codigo,this.cantidadProducto,this.productoSeleccionado.precio_unitario_venta)
     this.servicioProductos.nuevoProductoVenta(pv,this.getRolDB()).subscribe(data=>{
       alert("Se ha vendido un nuevo producto!!!");
+      this.claveBusqueda=""
       this.traerProductosNuevaVenta();
       this.traerProductos();
       this.totalNuevaVenta=this.totalNuevaVenta+(pv.cantidad*pv.precio_unitario);
       nuevaVentaForm.resetForm();
+      this.productoSeleccionado.cantidad_estanteria=0;
+      this.productoSeleccionado.precio_unitario_venta=0;
+    }, error=>{
+      alert("No hay suficiente producto en esta sucursal a la venta.")
     })
     
     //insertar productos a la venta
@@ -163,6 +172,7 @@ export class VentasComponent {
   getClientes(){
     this.servicioClientes.getClientes(this.getRolDB()).subscribe(data=>{
       this.clientes=data;
+      this.clientesT=data;
       console
       .log(this.clientes)
     }, error=>{
@@ -189,12 +199,30 @@ export class VentasComponent {
     });
   }
 
+  searchVenta(clave: string) {
+    this.ventas = clave === "" ? this.ventasT : this.buscarVentas(clave, this.ventasT);
+  }
+  
+
+  buscarVentas(clave: string, vt: Venta[]): Venta[] {
+    const claveNormalizada = clave.toLowerCase();
+    
+    return vt.filter(v => {
+      return (
+        v.codigo.toString().toLowerCase().includes(claveNormalizada)||
+        v.n_cliente.toLowerCase().includes(claveNormalizada)||
+        v.fecha.toLowerCase().includes(claveNormalizada)
+      );
+    });
+  }
+
   seleccionarCliente(idC:number){
     this.idCliente=idC;
     this.mostrarSeleccionarCliente=false;
     this.productosNuevaVenta=[]
     this.totalNuevaVenta=0;
     this.mostrarNuevaVenta=true;
+    this.claveBusqueda=""
     let v = new Venta(1,this.getIDUser(),"",this.getSucursal(),"",this.idCliente,"","",0,0,"",this.getCaja(),0)
     console.log(v);
     this.servicioVentas.NuevaVenta(v,this.getRolDB()).subscribe(data=>{
@@ -239,6 +267,18 @@ export class VentasComponent {
         producto.codigo.toString().includes(clave)
       );
     });
+  }
+
+  cancelarVenta(){
+    this.servicioVentas.cancelarVenta(this.getRolDB(),this.codigoNuevaVenta).subscribe(data=>{
+      alert("Se ha cancelado la venta con exito!!");
+      this.mostrarNuevaVenta=false;
+    })
+  }
+
+  mostrarSelectCliente(){
+    this.mostrarSeleccionarCliente=true;
+    this.claveBusqueda=""
   }
 
 

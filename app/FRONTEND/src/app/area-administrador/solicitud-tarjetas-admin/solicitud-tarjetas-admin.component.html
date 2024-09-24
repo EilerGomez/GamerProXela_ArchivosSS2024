@@ -1,0 +1,83 @@
+
+
+<div class="container" *ngIf="mostrarInfoTarjeta">
+    <div class="card">
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary"
+                (click)="mostrarInfoTarjeta=false"><i class="bi bi-add"></i> Aceptar</button>
+        </div> 
+        <br>
+        <h3>Detalles de la tarjeta de esta solicitud </h3>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Codigo tarjeta</th>
+                    <th>Tipo</th>
+                    <th>Id cliente</th>
+                    <th>Cliente</th>
+                    <th>Puntos</th>
+                    <th>Modificacion</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr >
+                    <td>{{tarjetaDetalles.codigo}}</td>
+                    <td>{{getTipo(tarjetaDetalles.tipo)}}</td>
+                    <td>{{tarjetaDetalles.cliente}}</td>
+                    <td>{{tarjetaDetalles.n_cliente}}</td>
+                    <td>{{getPuntos(tarjetaDetalles.total_puntos)}}</td>
+                    <td>{{tarjetaDetalles.fecha_mod}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="container" *ngIf="!mostrarInfoTarjeta">
+    <div class="card">
+        <h3>Totales las solicitudes de cambio ({{solicitudes.length}}) </h3>
+        
+        <div class="col-md-8">
+            <div class="input-group">
+                <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                    placeholder="Buscar solicitudes..." [(ngModel)]="claveBusqueda" 
+                    (input)="searchSolicitud(claveBusqueda)"
+                >
+                <div class="input-group-append">
+                    <span class="input-group-text">
+                        <i class="fas fa-search"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>#Solicitud</th>
+                    <th>Id cliente</th>
+                    <th>Cliente</th>
+                    <th>Estado</th>
+                    <th>Motivo</th>
+                    <th>Descripcion</th>
+                    <th class="text-center">ACCIONES</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of solicitudes; let i = index">
+                    <td>{{s.codigo}}</td>
+                    <td>{{s.cliente}}</td>
+                    <td>{{s.n_cliente}}</td>
+                    <td>{{s.estado}}</td>
+                    <td>{{s.motivo}}</td>
+                    <td>{{s.descripcion}}</td>
+                    <td class="text-center">
+                        <button class="btn btn-primary me-2 col-sm-5" (click)="aceptarSolicitud(s)" [disabled]="s.estado !=='PENDIENTE'"> <i class="bi bi-check2-all"></i>   Aprobar</button>
+                        <button class="btn btn-warning me-2 col-sm-5" (click)="verDetalles(s)"><i class="bi bi-eye"></i> detalles</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

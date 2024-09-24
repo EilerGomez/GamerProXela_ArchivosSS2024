@@ -23,4 +23,8 @@ export class VentasService {
   putDineroCobroSinDescuento(idV:number,idS:number, rol:number){
     return this.http.put(`${this.Url}obtenerpago/${idS}/${idV}?roldb=${rol}`,JSON.stringify(idV));
   }
+
+  cancelarVenta(rol:number, idV:number){
+    return this.http.delete(`${this.Url}cancelacion/${idV}?roldb=${rol}`);
+  }
 }

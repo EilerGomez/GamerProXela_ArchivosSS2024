@@ -139,6 +139,35 @@ function comprasRouter(clients) {
             res.status(500).send('Error al actualizar dinero por cobro de ventaaa');
         }
     });
+
+
+        //CANCELAR UNA VENTA
+        router.delete('/ventascancelacion/:idV', async (req, res) => {
+            const { idV } = req.params;
+            const { roldb } = req.query;
+            const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
+        
+            if (!client) {
+                return res.status(400).send('Usuario no conectado. Conéctese primero usando /connect/:id');
+            }
+        
+            if (!idV) {
+                return res.status(400).send('Todos los campos son obligatorios');
+            }
+        
+            try {
+                const result = await client.query(
+                    'CALL cajeros.cancelarVenta($1);',
+                    [ idV]
+                );
+        
+                // Devolver la venta eliminada
+                res.status(200).json(result.rows[0]); 
+            } catch (err) {
+                console.error('Error al cancelar la venta:', err.message);
+                res.status(500).send('Error al cancelar la ventaaa');
+            }
+        });
     /*Para obtener todas las compras: GET /api/compras?rol=1
     Para obtener una compra específica: GET /api/compras/123?rol=1*/
     return router;

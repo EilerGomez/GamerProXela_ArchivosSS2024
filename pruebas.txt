@@ -683,3 +683,104 @@ CREATE TRIGGER trigger_verificar_si_tieneTarjeta_Cliente
 BEFORE INSERT ON tarjetas.tarjeta_descuento
 FOR EACH ROW
 EXECUTE FUNCTION tarjetas.verificarTarjetaUsuario();
+
+
+
+-- trigger para actualizar la existencia cuando se cancela una
+CREATE OR REPLACE FUNCTION cajeros.actalizarProductoXCancelacionVenta()
+RETURNS TRIGGER AS $$
+DECLARE idsucursal INTEGER;
+BEGIN
+	SELECT sucursal INTO idsucursal from cajeros.ventas WHERE codigo = OLD.id_venta;
+  	UPDATE sucursales.productos_sucursal SET cantidad_estanteria = cantidad_estanteria + OLD.cantidad
+  	WHERE id_producto=OLD.id_producto AND id_sucursal =idsucursal;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_actualizar_pEstanteriaXcancelacionVenta
+AFTER DELETE ON cajeros.productos_venta
+FOR EACH ROW
+EXECUTE FUNCTION cajeros.actalizarProductoXCancelacionVenta();
+
+
+--- proceso para eliminar una venta que ha sido cancelada
+CREATE OR REPLACE PROCEDURE cajeros.cancelarVenta(
+    idventa INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+    BEGIN
+        DELETE FROM cajeros.productos_venta WHERE id_venta=idventa;
+		DELETE FROM cajeros.ventas WHERE codigo = idventa;
+    END;
+$$;
+
+
+
+-- insertando la funcion para llamar las solicitudes de tarjetas
+CREATE OR REPLACE FUNCTION tarjetas.getSolicitudesTarjetas()
+RETURNS TABLE(codigo integer, estado VARCHAR, cliente INTEGER, n_cliente VARCHAR, motivo VARCHAR, descripcion VARCHAR)
+AS $$
+BEGIN
+	RETURN QUERY
+		SELECT st.codigo,st.estado, st.cliente,c.nombre as n_cliente, st.motivo, st.descripcion
+		FROM tarjetas.solicitudes_tarjetas st
+		JOIN clientes.clientes c ON (c.identificacion=st.cliente);
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+--- proceso para insertar una nueva solicitud
+CREATE OR REPLACE PROCEDURE tarjetas.insertSolicitudTarjetas(
+    idcliente INTEGER, smotivo VARCHAR, sdescripcion VARCHAR
+)
+LANGUAGE plpgsql
+AS $$
+    BEGIN
+        INSERT INTO tarjetas.solicitudes_tarjetas(estado, cliente, motivo, descripcion)
+		VALUES ('PENDIENTE',idcliente,smotivo,sdescripcion);
+    END;
+$$;
+
+
+
+--- funcion para cambiar una tarjeta de tipo
+
+CREATE OR REPLACE FUNCTION tarjetas.cambiarTipoTarjeta(idcliente INTEGER, smotivo VARCHAR, fechamod DATE, idsolicitud INTEGER)
+RETURNS TABLE(estado VARCHAR)
+AS $$
+DECLARE
+    idtarjeta INTEGER;
+    tipotarjeta CHAR;
+    cantidadgastado NUMERIC;
+	estadosolicitud VARCHAR;
+BEGIN
+	estadosolicitud='ACEPTADA';
+    -- Obtener el código y tipo de tarjeta del cliente
+    SELECT codigo, tipo INTO idtarjeta, tipotarjeta
+    FROM tarjetas.tarjeta_descuento
+    WHERE cliente = idcliente;
+	-- obtener la cantidad comprada desde la fecha de modificacion de la tarjeta
+	SELECT SUM(total_sin_descuento) AS total_ventas INTO cantidadgastado
+	FROM cajeros.ventas	WHERE cliente = idcliente	AND fecha >= fechamod
+	AND fecha <= CURRENT_DATE;
+
+    IF (tipotarjeta = 'C' AND smotivo = 'CO' AND cantidadgastado>10000) THEN
+        UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=10, fecha_mod = CURRENT_DATE WHERE codigo=idtarjeta;
+    ELSIF (tipotarjeta = 'O' AND smotivo = 'OP' AND cantidadgastado>20000) THEN
+		 UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=20, fecha_mod = CURRENT_DATE WHERE codigo=idtarjeta;
+    ELSIF (tipotarjeta = 'P' AND smotivo = 'PD' AND cantidadgastado>30000 ) THEN
+	    UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=30, fecha_mod = CURRENT_DATE WHERE codigo=idtarjeta;
+    ELSE
+		estadosolicitud='RECHAZADA';
+    END IF;
+
+	UPDATE tarjetas.solicitudes_tarjetas SET estado =estadosolicitud WHERE codigo = idsolicitud;
+
+	RETURN QUERY SELECT estadosolicitud;
+
+
+END;
+$$ LANGUAGE plpgsql;

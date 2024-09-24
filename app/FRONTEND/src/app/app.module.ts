@@ -39,6 +39,8 @@ import { VentasService } from './Service/ventas.service';
 import { InfoSucursalComponent } from './area-cajero/info-sucursal/info-sucursal.component';
 import { TarjetasDescuentoComponent } from './area-cajero/tarjetas-descuento/tarjetas-descuento.component';
 import { TarjetasService } from './Service/tarjetas.service';
+import { SolicitudTarjetasComponent } from './area-cajero/solicitud-tarjetas/solicitud-tarjetas.component';
+import { SolicitudTarjetasAdminComponent } from './area-administrador/solicitud-tarjetas-admin/solicitud-tarjetas-admin.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -66,7 +68,9 @@ import { TarjetasService } from './Service/tarjetas.service';
     ProductosCajerosComponent,
     VentasComponent,
     InfoSucursalComponent,
-    TarjetasDescuentoComponent
+    TarjetasDescuentoComponent,
+    SolicitudTarjetasComponent,
+    SolicitudTarjetasAdminComponent
     
   ],
   imports: [

@@ -22,6 +22,8 @@ import { ProductosCajerosComponent } from './area-cajero/productos-cajeros/produ
 import { VentasComponent } from './area-cajero/ventas/ventas.component';
 import { InfoSucursalComponent } from './area-cajero/info-sucursal/info-sucursal.component';
 import { TarjetasDescuentoComponent } from './area-cajero/tarjetas-descuento/tarjetas-descuento.component';
+import { SolicitudTarjetasComponent } from './area-cajero/solicitud-tarjetas/solicitud-tarjetas.component';
+import { SolicitudTarjetasAdminComponent } from './area-administrador/solicitud-tarjetas-admin/solicitud-tarjetas-admin.component';
 
 const routes: Routes = [
 
@@ -32,7 +34,8 @@ const routes: Routes = [
     children: [
       {path:'listarUsuarios',component:ListarUsuariosComponent},
       {path:'cajas',component:CajasComponent},
-      {path:'modificacionesClienteSolicitudes',component:ModificacionClientesSolicitudesComponent}
+      {path:'modificacionesClienteSolicitudes',component:ModificacionClientesSolicitudesComponent},
+      {path:'solicitudesTarjetasAdmin',component:SolicitudTarjetasAdminComponent}
     ]
   },
   { path: 'login', component: LoginComponent },
@@ -59,7 +62,8 @@ const routes: Routes = [
       {path:'productosCajero',component:ProductosCajerosComponent},
       {path:'ventas',component:VentasComponent},
       {path:'infoSucursal',component:InfoSucursalComponent},
-      {path:'todasTarjetas',component:TarjetasDescuentoComponent}
+      {path:'todasTarjetas',component:TarjetasDescuentoComponent},
+      {path:'solicitudesTarjetas',component:SolicitudTarjetasComponent}
     ]
   }
 ];

@@ -70,6 +70,22 @@
             </button>
         </div>
         <br>
+        <div class="form-group row">
+            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{productos.length}}</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                        placeholder="Buscar productos..." [(ngModel)]="claveBusqueda" 
+                        (input)="searchProducto(claveBusqueda)"
+                    >
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div><br>
         
         <table class="table table-bordered">
             <thead>

@@ -6,13 +6,13 @@
                     <h3 class="mt-2 me-4">Detalles en esta venta</h3>
                 </nav>
                 <div class="text-end">
-                    <button type="submit" class="btn btn-primary"
-                        (click)="mostrarDetalles=false"><i class="bi bi-add"></i> Aceptar</button>
+                    <button type="submit" class="btn btn-danger"
+                        (click)="mostrarDetalles=false"><i class="bi bi-add"></i> Cerrar</button>
                 </div> 
                 <div class="card-body">
                     
                 </div>
-                <h3>Productos en la venta {{ventaDetalle.codigo}}</h3>
+                <h3>Productos en la venta No.{{ventaDetalle.codigo}}</h3>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -53,7 +53,12 @@
                 </nav>
                 <div class="text-end">
                     <button type="submit" class="btn btn-warning"
-                        (click)="dejarDeMostrarNuevaVenta()"><i class="bi bi-add"></i> Aceptar</button>
+                        (click)="dejarDeMostrarNuevaVenta()"><i class="bi bi-add"></i> Cerrar</button>
+                </div> 
+
+                <div class="text-init">
+                    <button type="submit" class="btn btn-danger"
+                        (click)="cancelarVenta()"><i class="bi bi-add"></i> Cancelar venta</button>
                 </div> 
                 <br>
                 
@@ -95,7 +100,7 @@
                         </div> 
                     </form>
                 </div>
-                <h3>Productos en la venta {{codigoNuevaVenta}}</h3>
+                <h3>Productos en la venta No.{{codigoNuevaVenta}}</h3>
                 <table class="table table-bordered">
                     <thead>
                         <tr>
@@ -145,7 +150,7 @@
 </div>
 
 
-<div class="container mt-5 pt-5" *ngIf="mostrarSeleccionarCliente" >
+<div class="container" *ngIf="mostrarSeleccionarCliente" >
     <div class="card">
         <h3>Seleccione un cliente para realizar la venta </h3><br>
         <div class="form-group row">
@@ -199,11 +204,27 @@
     <div class="card">
         <h3>Totales ({{ventas.length}}) </h3>
         <div class="text-end">
-            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="mostrarSeleccionarCliente=true">
+            <button class="btn btn-primary ms-3 mt-2" aria-label="Agregar compra" (click)="mostrarSelectCliente()">
                 <i class="bi bi-cart-plus-fill bi-xxl"></i> Agregar
             </button>
         </div><br>
-        
+        <div class="form-group row">
+            <label for="busqueda" class="col-md-4 col-form-label">Búsqueda totales: {{ventas.length}}</label>
+            <div class="col-md-8">
+                <div class="input-group">
+                    <input type="text" class="form-control" id="busqueda"name="busqueda" 
+                        placeholder="Buscar venta..." [(ngModel)]="claveBusqueda" 
+                        (input)="searchVenta(claveBusqueda)"
+                    >
+                    <div class="input-group-append">
+                        <span class="input-group-text">
+                            <i class="fas fa-search"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
         <table class="table table-bordered">
             <thead>
                 <tr>

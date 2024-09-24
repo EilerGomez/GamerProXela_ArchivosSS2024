@@ -1,5 +1,5 @@
 
-<div class="container mt-2 col-md-4" *ngIf="mostrarNuevoCliente">
+<div class="container" *ngIf="mostrarNuevoCliente">
     <div class="row">
         <div class="col">
             <div class="card my-4">
@@ -34,7 +34,7 @@
         </div>
     </div>
 </div>
-<div class="container mt-5 pt-5" *ngIf="!mostrarNuevoCliente" >
+<div class="container" *ngIf="!mostrarNuevoCliente" >
     <div class="card">
         <h3>Totales ({{clientes.length}}) </h3>
         <div class="text-end">
