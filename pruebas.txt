@@ -784,3 +784,71 @@ BEGIN
 
 END;
 $$ LANGUAGE plpgsql;
+
+
+
+
+
+--FUNCION PARA AGREGAR EL DINERO COBRADO A LA SUCURSAL CON DESCUENTO
+CREATE OR REPLACE FUNCTION cajeros.cobrarDineroConDescuento(
+	idsucursal INTEGER,
+	idventa INTEGER,
+	cantidadPuntos DECIMAL
+)
+RETURNS VOID
+AS $$
+	DECLARE cantidadDinero DECIMAL;
+	DECLARE idcliente INTEGER;
+BEGIN
+	select total_sin_descuento,cliente INTO cantidadDinero,idcliente FROM cajeros.ventas
+		WHERE codigo=idventa;
+
+    UPDATE cajeros.ventas
+    SET
+        total_con_descuento=total_sin_descuento-cantidadPuntos
+    WHERE codigo = idventa;
+	UPDATE sucursales.sucursal SET dinero_caja=dinero_caja+(cantidadDinero-cantidadPuntos)
+	WHERE identificacion = idsucursal;
+
+	UPDATE tarjetas.tarjeta_descuento SET total_puntos = total_puntos - cantidadPuntos
+			WHERE cliente = idcliente;
+	call tarjetas.insertarPuntosTarjetaDescuento(idcliente,cantidadDinero);
+
+END;
+$$ LANGUAGE plpgsql;
+
+
+
+
+
+-- trigger para actualizar la existencia cuando se cancela una compra
+CREATE OR REPLACE FUNCTION bodegas.actalizarProductoXCancelacionCompra()
+RETURNS TRIGGER AS $$
+DECLARE idsucursal INTEGER;
+BEGIN
+	SELECT sucursal INTO idsucursal from bodegas.compra WHERE codigo = OLD.id_compra;
+  	UPDATE sucursales.productos_sucursal SET cantidad_bodega = cantidad_bodega - OLD.cantidad
+  	WHERE id_producto=OLD.id_producto AND id_sucursal =idsucursal;
+	  UPDATE sucursales.sucursal SET dinero_caja = dinero_caja + OLD.subtotal
+	  	WHERE identificacion = idsucursal;
+    RETURN OLD;
+END;
+$$ LANGUAGE plpgsql;
+
+CREATE TRIGGER trigger_actualizar_pBodegaXcancelacionCompra
+AFTER DELETE ON bodegas.productos_compra
+FOR EACH ROW
+EXECUTE FUNCTION bodegas.actalizarProductoXCancelacionCompra();
+
+
+--- proceso para eliminar una compra que ha sido cancelada
+CREATE OR REPLACE PROCEDURE bodegas.cancelarCompra(
+    idcompra INTEGER
+)
+LANGUAGE plpgsql
+AS $$
+    BEGIN
+        DELETE FROM bodegas.productos_compra WHERE id_compra=idcompra;
+		DELETE FROM bodegas.compra WHERE codigo = idcompra;
+    END;
+$$;

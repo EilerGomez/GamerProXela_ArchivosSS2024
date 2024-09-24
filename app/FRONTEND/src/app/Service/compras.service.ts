@@ -21,4 +21,8 @@ export class ComprasService {
     return this.http.delete(`${this.Url}/${idC}?roldb=${rol}`);
   }
 
+  cancelarCompra(rol:number, idC:number){
+    return this.http.delete(`${this.Url}cancelacion/${idC}?roldb=${rol}`);
+  }
+
 }

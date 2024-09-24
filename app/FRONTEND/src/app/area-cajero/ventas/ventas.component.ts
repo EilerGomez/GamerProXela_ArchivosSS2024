@@ -243,11 +243,17 @@ export class VentasComponent {
     this.aplicaDescuento=true
     //aqui logica si aplico descuento y realizar el pago
     if(this.aplicarChekDescuento){
-      alert("Aplicar la logica del descuento!!!!!");
+      this.servicioVentas.putDineroCobroConDescuento(this.codigoNuevaVenta,this.getSucursal(),this.cantidadPuntosDescuento,this.getRolDB()).subscribe(data=>{
+        alert("Pago realizado con exito!!!!!");
+        this.mostrarNuevaVenta=false;
+        this.ngOnInit();
+      },error=>{
+        console.log("No se pudo hacer el pago \n"+error)
+      })
     }else{
-      alert("Pago realizado!!!!!");
       this.servicioVentas.putDineroCobroSinDescuento(this.codigoNuevaVenta,this.getSucursal(),this.getRolDB()).subscribe(data=>{
         this.mostrarNuevaVenta=false;
+        alert("Pago realizado!!!!!");
         this.ngOnInit();
       },error=>{
         console.log("No se pudo hacer el pago \n"+error)
@@ -285,6 +291,7 @@ export class VentasComponent {
   mostrarSelectCliente(){
     this.mostrarSeleccionarCliente=true;
     this.claveBusqueda=""
+    this.mostrarPago=false;
   }
 
   infoBotonDescuento:string="APLICAR DESCUENTO";
@@ -296,6 +303,7 @@ export class VentasComponent {
   alertarPuntos(){
     if(this.cantidadPuntosDescuento>this.tarjetaDeCliente.total_puntos){
       this.checkBtnRealizarPago=false
+      this.cantidadPuntosDescuento=0;
     }else{
       this.checkBtnRealizarPago=true;
     }

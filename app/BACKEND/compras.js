@@ -111,6 +111,34 @@ function comprasRouter(clients) {
             res.status(500).send('Error al eliminar usuario');
         }
     });
+
+     //CANCELAR UNA Compra
+     router.delete('/comprascancelacion/:idC', async (req, res) => {
+        const { idC } = req.params;
+        const { roldb } = req.query;
+        const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
+    
+        if (!client) {
+            return res.status(400).send('Usuario no conectado. Conéctese primero usando /connect/:id');
+        }
+    
+        if (!idC) {
+            return res.status(400).send('Todos los campos son obligatorios');
+        }
+    
+        try {
+            const result = await client.query(
+                'CALL bodegas.cancelarCompra($1);',
+                [ idC]
+            );
+    
+            // Devolver la venta eliminada
+            res.status(200).json(result.rows[0]); 
+        } catch (err) {
+            console.error('Error al cancelar la compra:', err.message);
+            res.status(500).send('Error al cancelar la compraa');
+        }
+    });
     /*Para obtener todas las compras: GET /api/compras?rol=1
     Para obtener una compra específica: GET /api/compras/123?rol=1*/
     return router;

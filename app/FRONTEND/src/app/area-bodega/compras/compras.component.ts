@@ -104,6 +104,7 @@ export class ComprasComponent {
       this.traerProductosNuevaCompra(this.codigoNuevaCompra);
       nuevaCompraForm.resetForm();
       this.totalNuevaCompra+=pc.cantidad*pc.precio_unitario;
+      this.traerProductos();
     }, error=>{
       console.log(error)
       alert("No cuentas con el dinero sufuciente para realizar esta compra, por favor comunicate con el administrador")
@@ -129,6 +130,16 @@ export class ComprasComponent {
     }else{
       this.ngOnInit();
     }
+  }
+
+  cancelarCompra(){
+    this.servicioCompras.cancelarCompra(this.getRolDB(),this.codigoNuevaCompra).subscribe(data=>{
+      alert("Se la cancelado al compra!");
+      this.mostrarNuevaCompra=false;
+      this.ngOnInit();
+    }, error=>{
+      console.log(error);
+    })
   }
   
 

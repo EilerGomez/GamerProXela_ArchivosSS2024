@@ -140,6 +140,33 @@ function comprasRouter(clients) {
         }
     });
 
+    // HACER PAGO DE UNA VENTA CON DESCUENTO
+    router.put('/ventasobtenerpago/:idS/:idV/:puntos', async (req, res) => {
+        const { idS,idV, puntos } = req.params;
+        const { roldb } = req.query;
+        const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
+    
+        if (!client) {
+            return res.status(400).send('Usuario no conectado. Conéctese primero usando /connect/:id');
+        }
+    
+        if (!idS ||!idV || !puntos) {
+            return res.status(400).send('Todos los campos son obligatorios');
+        }
+    
+        try {
+            const result = await client.query(
+                'select cajeros.cobrarDineroConDescuento($1,$2,$3);',
+                [idS,idV, puntos]
+            );
+            
+            // Devolver el usuario actualizado
+            res.status(200).json(result.rows[0]); 
+        } catch (err) {
+            console.error('Error al actualizar dinero por cobro de venta con descuento', err.message);
+            res.status(500).send('Error al actualizar dinero por cobro de ventaaa');
+        }
+    });
 
         //CANCELAR UNA VENTA
         router.delete('/ventascancelacion/:idV', async (req, res) => {
