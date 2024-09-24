@@ -9,6 +9,8 @@ import { NgForm } from '@angular/forms';
 import { ClientesService } from 'src/app/Service/clientes.service';
 import { Cliente } from 'src/app/Modelo/Cliente';
 import { ProdcutosVenta } from 'src/app/Modelo/ProductosVenta';
+import { TarjetasDescuento } from 'src/app/Modelo/TarjetasDescuento';
+import { TarjetasService } from 'src/app/Service/tarjetas.service';
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.component.html',
@@ -17,7 +19,7 @@ import { ProdcutosVenta } from 'src/app/Modelo/ProductosVenta';
 export class VentasComponent {
 
   constructor(private servicioVentas:VentasService, private servicioProductos:ProductosService,
-    private servicioClientes:ClientesService
+    private servicioClientes:ClientesService, private servicioTarjetas:TarjetasService
   ){}
   ngOnInit():void{
     this.servicioVentas.getVentas(this.getRolDB(),this.getSucursal()).subscribe(data=>{
@@ -234,9 +236,11 @@ export class VentasComponent {
 
   hacerPago(){
     this.mostrarPago=true
+    this.getTarjetaCliente(this.idCliente);
   }
 
   pagarVenta(){
+    this.aplicaDescuento=true
     //aqui logica si aplico descuento y realizar el pago
     if(this.aplicarChekDescuento){
       alert("Aplicar la logica del descuento!!!!!");
@@ -270,9 +274,11 @@ export class VentasComponent {
   }
 
   cancelarVenta(){
+    this.mostrarPago=false;
     this.servicioVentas.cancelarVenta(this.getRolDB(),this.codigoNuevaVenta).subscribe(data=>{
       alert("Se ha cancelado la venta con exito!!");
       this.mostrarNuevaVenta=false;
+      this.ngOnInit();
     })
   }
 
@@ -281,5 +287,50 @@ export class VentasComponent {
     this.claveBusqueda=""
   }
 
+  infoBotonDescuento:string="APLICAR DESCUENTO";
+  aplicaDescuento:boolean = true;
+  cantidadPuntosDescuento:number=0;
+  tarjetaDeCliente!:TarjetasDescuento
+  checkBtnRealizarPago:boolean=true;
 
+  alertarPuntos(){
+    if(this.cantidadPuntosDescuento>this.tarjetaDeCliente.total_puntos){
+      this.checkBtnRealizarPago=false
+    }else{
+      this.checkBtnRealizarPago=true;
+    }
+  }
+  getTarjetaCliente(idc:number){
+    this.servicioTarjetas.getTarjetaByIDCiente(this.getRolDB(),idc).subscribe(data=>{
+      this.tarjetaDeCliente=data;
+      if(!this.tarjetaDeCliente){
+        this.aplicaDescuento=false;
+        console.log("No aplica el descuento")
+      }else{
+        this.aplicaDescuento=true;
+      }
+      console.log(this.tarjetaDeCliente)
+    }, error=>{
+      console.log(error);
+      this.aplicaDescuento=false
+    })
+  }
+
+  getPuntos(p:number):number{
+    return Math.floor(p);
+  }
+  getTipo(t:string):string{
+    switch (t) {
+      case "C":
+        return "Comun";
+        break;
+      case "O": return "Oro"
+        break
+      case "P": return "Platino"
+        break
+      default:
+        return "Diamante"
+        break;
+    }
+  }
 }

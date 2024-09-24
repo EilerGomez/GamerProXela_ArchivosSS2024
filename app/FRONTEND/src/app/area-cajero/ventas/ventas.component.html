@@ -133,12 +133,56 @@
                 </div>
                 
                 <div class="form-group mt-3" *ngIf="mostrarPago">
-                    <input type="checkbox" id="activo" [(ngModel)]="aplicarChekDescuento" name="activo">
-                    <label for="activo">Aplicar descuento</label>
-                    <br><br><br><br>
+
+                    
+                    <div class="ms-5" *ngIf="aplicaDescuento">
+                        <input type="checkbox" id="activo" [(ngModel)]="aplicarChekDescuento"name="activo">
+                        <label for="activo"> {{infoBotonDescuento}}</label><br>
+                            <div *ngIf="aplicarChekDescuento" >
+                                <label for="table">Informacion de la tarjeta del cliente {{tarjetaDeCliente.n_cliente}}</label>
+                                <table class="table table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Codigo</th>
+                                            <th>Tipo</th>
+                                            <th>Id cliente</th>
+                                            <th>Cliente</th>
+                                            <th>Puntos</th>
+                                            <th>Modificacion</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr >
+                                            <td>{{tarjetaDeCliente.codigo}}</td>
+                                            <td>{{getTipo(tarjetaDeCliente.tipo)}}</td>
+                                            <td>{{tarjetaDeCliente.cliente}}</td>
+                                            <td>{{tarjetaDeCliente.n_cliente}}</td>
+                                            <td>{{getPuntos(tarjetaDeCliente.total_puntos)}}</td>
+                                            <td>{{tarjetaDeCliente.fecha_mod}}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                    <input type="number" class="form-control" id="cantidadDesc"name="cantidadDesc" placeholder="Cantidad de puntos a canjear" 
+                                        [(ngModel)]="cantidadPuntosDescuento" (input)="alertarPuntos()"
+                                    >
+                                    <div class="alert alert-warning alert-dismissible fade show" role="alert" *ngIf="!checkBtnRealizarPago">
+                                        <strong>¡Atención!</strong> No puedes canjear esa cantidad de puntos, puntos insuficientes
+                                    </div>
+                            </div>
+                    </div>
+                    <div *ngIf="!aplicaDescuento" >
+                        <label for="activo" >NO APLICA DESCUENTO</label>
+                    </div>
+                    <br>
+                    <div *ngIf="mostrarPago">
+                        <h6 >Precio total: {{totalNuevaVenta}}</h6>
+                        <h6>Descuento: {{cantidadPuntosDescuento}}</h6>
+                        <h6 >Total a pagar: {{totalNuevaVenta - cantidadPuntosDescuento}}</h6>
+                    </div>
+                    <br><br>
                     <div class="text-center">
                         <button type="submit" class="btn btn-primary btn-lg"
-                             (click)="pagarVenta()">
+                             (click)="pagarVenta()" [disabled]="!checkBtnRealizarPago">
                              <i class="bi bi-check-all"></i> Hacer pago
                         </button>
                     </div> 

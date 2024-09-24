@@ -203,12 +203,12 @@ CREATE TABLE tarjetas.tarjeta_descuento(
 CREATE TABLE tarjetas.solicitudes_tarjetas(
 	codigo SERIAL NOT NULL,
 	estado CHARACTER VARYING(20) NOT NULL,
-	tarjeta INTEGER NOT NULL,
+	cliente INTEGER NOT NULL,
 	motivo CHARACTER VARYING(22) NOT NULL,
 	descripcion CHARACTER VARYING(150),
 	PRIMARY KEY(codigo),
-	CONSTRAINT tarjeta_solicitud_tarjeta_fk FOREIGN KEY(tarjeta)
-	REFERENCES tarjetas.tarjeta_descuento(codigo)
+	CONSTRAINT cliente_solicitud_tarjeta_fk FOREIGN KEY(cliente)
+	REFERENCES clientes.clientes(identificacion)
 	ON DELETE CASCADE
 	ON UPDATE CASCADE
 );

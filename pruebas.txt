@@ -768,11 +768,11 @@ BEGIN
 	AND fecha <= CURRENT_DATE;
 
     IF (tipotarjeta = 'C' AND smotivo = 'CO' AND cantidadgastado>10000) THEN
-        UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=10, fecha_mod = CURRENT_DATE WHERE codigo=idtarjeta;
+        UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=10, fecha_mod = CURRENT_DATE, tipo='O' WHERE codigo=idtarjeta;
     ELSIF (tipotarjeta = 'O' AND smotivo = 'OP' AND cantidadgastado>20000) THEN
-		 UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=20, fecha_mod = CURRENT_DATE WHERE codigo=idtarjeta;
+		 UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=20, fecha_mod = CURRENT_DATE, tipo='P' WHERE codigo=idtarjeta;
     ELSIF (tipotarjeta = 'P' AND smotivo = 'PD' AND cantidadgastado>30000 ) THEN
-	    UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=30, fecha_mod = CURRENT_DATE WHERE codigo=idtarjeta;
+	    UPDATE tarjetas.tarjeta_descuento SET puntosxgasto=30, fecha_mod = CURRENT_DATE, tipo='D' WHERE codigo=idtarjeta;
     ELSE
 		estadosolicitud='RECHAZADA';
     END IF;

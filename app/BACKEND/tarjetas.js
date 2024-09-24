@@ -27,6 +27,32 @@ function usuariosRouter(clients) {
         }
     });
 
+
+    // OBTENER Una tarjeta
+    router.get('/tarjetas/:idC', async (req, res) => {
+        const{idC}=req.params;
+        const { roldb } = req.query;//el rol viene en la ruta
+
+        if (!roldb) {
+            return res.status(400).send('El campo rol es obligatorio');
+        }
+
+        const client = clients[roldb]; // Obtiene el cliente del objeto dependiendo el rol del usuario
+
+        if (!client) {
+            return res.status(400).send('Usuario no conectado. Conéctese primero usando /connect/:id');
+        }
+        if(!idC){
+            return res.status(400).send('Todos los campos son obligatorios');
+        }
+
+        try {
+            const result = await client.query('select * from tarjetas.getTarjetas() WHERE cliente=$1;',[idC]);
+            res.status(200).json(result.rows[0]);
+        } catch (err) {
+            res.status(500).send('Error al obtener las tarjetas de descuento del cliente: ' + idC+", " + err.message);
+        }
+    });
     
            // AGREGAR NUEVA TARJETA
     router.post('/tarjetas/:cliente', async (req, res) => {

@@ -17,4 +17,8 @@ export class TarjetasService {
   nuevaTarjeta(cliente:number, rol:number){
     return this.http.post<any>(`${this.Url}/${cliente}?roldb=${rol}`,JSON.stringify(cliente));
   }
+
+  getTarjetaByIDCiente(rol:number, idC:number){
+    return this.http.get<TarjetasDescuento>(`${this.Url}/${idC}?roldb=${rol}`);
+  }
 }
