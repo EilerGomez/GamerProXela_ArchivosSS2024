@@ -69,8 +69,8 @@ export class ModificacionClientesSolicitudesComponent {
     return suc;
   }
 
-  aprobarSolicitudModificacion(idS:number){
-    if(confirm("Aprobar la solicitud para modificar cliente No."+idS)){
+  aprobarSolicitudModificacion(idS:number, idC:number){
+    if(confirm("Aprobar la solicitud para modificar cliente No."+idC)){
       this.servicioClientes.putSolicitudesClientesModificacionliente(idS,this.getRolDB()).subscribe(data=>{
         console.log(data)
         alert("Se ha aprobado al solicitud")

@@ -47,7 +47,7 @@
                     <td>{{s.descripcion}}</td>
                     <td>{{getEstadoSolicitud(s.aprobacion)}}</td>
                     <td class="">
-                        <button class="btn btn-success " [disabled]="s.aprobacion" (click)="aprobarSolicitudModificacion(s.id)"> <i class="bi bi-check-all"></i>  Aprobar</button>
+                        <button class="btn btn-success " [disabled]="s.aprobacion" (click)="aprobarSolicitudModificacion(s.id,s.cliente)"> <i class="bi bi-check-all"></i>  Aprobar</button>
                     </td>
                 </tr>
             </tbody>
