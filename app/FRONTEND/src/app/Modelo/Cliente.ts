@@ -3,6 +3,7 @@ export class Cliente {
     nombre!: string;
     telefono!: number;
     nit!: string;
+    total_gastado:number=0 // este funciona para el reporte 5 
   
     constructor(identificacion: number, nombre: string, telefono: number, nit: string) {
       this.identificacion = identificacion;

@@ -1,0 +1,27 @@
+
+<div class="container" >
+    <div class="card">
+        <h3>● Top 10 clientes que más dinero han gastado. </h3>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th>Identificacion</th>
+                    <th>Nombre</th>
+                    <th>Telefono</th>
+                    <th>Nit</th>
+                    <th class="text-center">Total gastado</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let c of clientes; let i = index">
+                    <td>{{c.identificacion}}</td>
+                    <td>{{c.nombre}}</td>
+                    <td>{{c.telefono}}</td>
+                    <td>{{c.nit}}</td>
+                    <td class="text-center">{{c.total_gastado}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

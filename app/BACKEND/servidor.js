@@ -10,6 +10,7 @@ const clientesRouter=require('./clientes')
 const ventasRouter=require('./ventas')
 const tarjetasRouter=require('./tarjetas')
 const solicitudestarjetasRouter=require('./SolicitudesTarjetas')
+const reportesRouter=require('./reportes')
 const crypto = require('crypto');
 
 const app = express();
@@ -30,6 +31,7 @@ app.use('/api',clientesRouter(clients));
 app.use('/api',ventasRouter(clients));
 app.use('/api',tarjetasRouter(clients));
 app.use('/api',solicitudestarjetasRouter(clients));
+app.use('/api',reportesRouter(clients));
 // Ruta de conexion de un usuario segun su rol
 app.post('/connect', async (req, res) => {
   const {id, password, rol}=req.body;

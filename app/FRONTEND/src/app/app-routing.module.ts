@@ -24,6 +24,11 @@ import { InfoSucursalComponent } from './area-cajero/info-sucursal/info-sucursal
 import { TarjetasDescuentoComponent } from './area-cajero/tarjetas-descuento/tarjetas-descuento.component';
 import { SolicitudTarjetasComponent } from './area-cajero/solicitud-tarjetas/solicitud-tarjetas.component';
 import { SolicitudTarjetasAdminComponent } from './area-administrador/solicitud-tarjetas-admin/solicitud-tarjetas-admin.component';
+import { HistorialDescuentosComponent } from './area-administrador/reportes/historial-descuentos/historial-descuentos.component';
+import { Top10ventasIntervaloTiempoComponent } from './area-administrador/reportes/top10ventas-intervalo-tiempo/top10ventas-intervalo-tiempo.component';
+import { Top2sucursalesMayorIngresoComponent } from './area-administrador/reportes/top2sucursales-mayor-ingreso/top2sucursales-mayor-ingreso.component';
+import { Top10ProductosMasVendidosComponent } from './area-administrador/reportes/top10-productos-mas-vendidos/top10-productos-mas-vendidos.component';
+import { Top10ClientesMayorGastoComponent } from './area-administrador/reportes/top10-clientes-mayor-gasto/top10-clientes-mayor-gasto.component';
 
 const routes: Routes = [
 
@@ -35,7 +40,12 @@ const routes: Routes = [
       {path:'listarUsuarios',component:ListarUsuariosComponent},
       {path:'cajas',component:CajasComponent},
       {path:'modificacionesClienteSolicitudes',component:ModificacionClientesSolicitudesComponent},
-      {path:'solicitudesTarjetasAdmin',component:SolicitudTarjetasAdminComponent}
+      {path:'solicitudesTarjetasAdmin',component:SolicitudTarjetasAdminComponent},
+      {path:'historialDescuentos',component:HistorialDescuentosComponent},
+      {path:'top10VentasMasGrandesXTiempo',component:Top10ventasIntervaloTiempoComponent},
+      {path:'top2SucursalesMasIngreso', component:Top2sucursalesMayorIngresoComponent},
+      {path:'top10ProductosMasVendidos',component:Top10ProductosMasVendidosComponent},
+      {path:'top10ClientesConMasGasto', component:Top10ClientesMayorGastoComponent}
     ]
   },
   { path: 'login', component: LoginComponent },
@@ -44,7 +54,8 @@ const routes: Routes = [
     children:[
       {path:'compras', component:ComprasComponent},
       {path:'addProductoBodega',component:AddProductosBodegaComponent},
-      {path:'todosProductos',component:TodosProductosComponent}
+      {path:'todosProductos',component:TodosProductosComponent},
+      {path:'infoSucursal',component:InfoSucursalComponent}
     ]
   },
   {

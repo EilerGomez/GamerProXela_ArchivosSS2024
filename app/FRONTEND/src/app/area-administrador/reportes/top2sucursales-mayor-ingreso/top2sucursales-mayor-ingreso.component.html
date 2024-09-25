@@ -1,0 +1,26 @@
+<div class="container">
+    <div class="card">
+                
+        <h3>● Top 2 sucursales con mas ingreso en el sistema </h3>
+        <div class="text-end"></div>
+        <br>
+        <table class="table table-bordered">
+            <thead>
+                <tr>
+                    <th># Sucursal</th>
+                    <th>Nombre</th>
+                    <th>Direccion</th>
+                    <th>Ingreso</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let s of sucursales; let i = index">
+                    <td>{{s.identificacion}}</td>
+                    <td>{{s.nombre}}</td>
+                    <td>{{s.direccion}}</td>
+                    <td>{{s.dinero_caja}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
