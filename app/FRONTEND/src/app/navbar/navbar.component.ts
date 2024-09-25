@@ -37,6 +37,9 @@ export class NavbarComponent {
 
   logOut() {
     localStorage.removeItem('usuario');
+    if(localStorage.getItem('area')==='4'){
+      localStorage.removeItem('codigocaja');
+    }
     localStorage.removeItem('area');
     this.router.navigate(['/homepage']);
     this.service.putCerrarConexionDB("a").subscribe(data=>{
